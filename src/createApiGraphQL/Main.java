@@ -1131,10 +1131,9 @@ public class Main extends HttpServlet{
         fw.close();
 
         createServer(createdObjects, interfaces);
-        
+
         String command = "javac -cp \"../../lib/*\" *.java";
-        Process p = Runtime.getRuntime().exec(command,null, new File(getServletContext().getRealPath("WEB-INF/classes/") + "serverGraphQL"));
-        System.out.println(p.exitValue());
+        Runtime.getRuntime().exec(command,null, new File(getServletContext().getRealPath("WEB-INF/classes/") + "serverGraphQL"));
 
 	}
 	

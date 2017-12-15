@@ -89,6 +89,7 @@ public class Main extends HttpServlet{
 	//static private String fileDestination;
 	static public String fileDestination;
 	static private URL destinationPathApiGraphQL = ClassLoader.getSystemResource("esquema.graphqls");
+	static public boolean existsDatabase = true;
 
 	
 	static void getObjects(ArrayList<Object> objects, ArrayList<Field> fields, HashMap<String, ArrayList<String>> interfaces,  VirtGraph graph){
@@ -998,7 +999,7 @@ public class Main extends HttpServlet{
 	 * @throws IOException 
 	 * @throws URISyntaxException 
 	 */
-	public void main() throws IOException {
+	public void main() throws IOException, Exception {
 		
 		ClassLoader classLoader = getClass().getClassLoader();
 
@@ -1022,118 +1023,121 @@ public class Main extends HttpServlet{
 				 Files.delete(p);
 			 }
 		}
-		
+		VirtGraph graph = null;
+		 graph = new VirtGraph (url_hostlist, user, password);
 
-		VirtGraph graph = new VirtGraph (url_hostlist, user, password);
-
-		graph.clear ();
-
-		ArrayList<Object> createdObjects = new ArrayList<>();
-		HashMap<String, ArrayList<String>> interfaces = new HashMap<>();
-		ArrayList<Field> createdField= new ArrayList<>();
+	
 		
-		//get Objects
-		
-		getFields(createdField, graph);
-		getObjects(createdObjects, createdField, interfaces, graph);
-
-		graph.close();
-		
-		for(Object o : createdObjects){
-			System.out.println(o.getName().toString());
+		if(graph != null){
+			graph.clear ();
+	
+			ArrayList<Object> createdObjects = new ArrayList<>();
+			HashMap<String, ArrayList<String>> interfaces = new HashMap<>();
+			ArrayList<Field> createdField= new ArrayList<>();
 			
-		}
-
-		File file= new File(getServletContext().getRealPath("WEB-INF/classes/esquema.graphqls"));
-		if(!file.exists()) file.createNewFile();
-		
-		//file= new File(classLoader.getResource("esquema.graphqls").getFile());
-		//file= new File(getServletContext().getRealPath("WEB-INF/classes/esquema.graphqls"));
-		FileWriter fw = new FileWriter(file);
-
-		
-        for(Object o : createdObjects){
-        	boolean interfaz = false;
-    		Integer index = o.getName().lastIndexOf("/");
-			String shortName = o.getName().substring(index + 1);
+			//get Objects
 			
-			//Is a superclass, so we have to create a type and a interface
-        	if(interfaces.containsKey(o.getName())){ 
-        		o.setInterface(true);
-    			fw.write("interface I" + shortName + " {" + "\r\n"); //First line
-    			fw.write("	" + shortName + "Type: String!" + "\r\n"); //type 
-    			fw.write("	" + "idInstance : String!" + "\r\n"); //type 
-    			writeFields(o, fw, interfaces);
-    			fw.write("}" + "\r\n" + "\r\n"); //End interface
-    			
-    			fw.write("type " + shortName + " implements I" + shortName + " {" + "\r\n");
-    			fw.write("	" + shortName + "Type: String!" + "\r\n"); //type 
-    			
-    			writeFields(o, fw, interfaces);
-    			fw.write("	" + "idInstance : String!" + "\r\n"); //type 
-    			fw.write("}" + "\r\n" + "\r\n"); //End interface
-        	}else{
-
-        		fw.write("type " + shortName + " ");
-        		if(o.getSubClassOf().size() == 0)  fw.write("{" + "\r\n");
-        		else{
-	        		int i = 0;
-	        		for(String subClassOf : o.getSubClassOf()){
-	        			index = subClassOf.lastIndexOf("/");
-	        			String shortNameSubClass = subClassOf.substring(index + 1);
-	        			if(i == 0) fw.write("implements I" + shortNameSubClass);
-	        			else fw.write(", I" + shortNameSubClass);
-	        			++i;
+			getFields(createdField, graph);
+			getObjects(createdObjects, createdField, interfaces, graph);
+	
+			graph.close();
+			
+			for(Object o : createdObjects){
+				System.out.println(o.getName().toString());
+				
+			}
+	
+			File file= new File(getServletContext().getRealPath("WEB-INF/classes/esquema.graphqls"));
+			if(!file.exists()) file.createNewFile();
+			
+			//file= new File(classLoader.getResource("esquema.graphqls").getFile());
+			//file= new File(getServletContext().getRealPath("WEB-INF/classes/esquema.graphqls"));
+			FileWriter fw = new FileWriter(file);
+	
+			
+	        for(Object o : createdObjects){
+	        	boolean interfaz = false;
+	    		Integer index = o.getName().lastIndexOf("/");
+				String shortName = o.getName().substring(index + 1);
+				
+				//Is a superclass, so we have to create a type and a interface
+	        	if(interfaces.containsKey(o.getName())){ 
+	        		o.setInterface(true);
+	    			fw.write("interface I" + shortName + " {" + "\r\n"); //First line
+	    			fw.write("	" + shortName + "Type: String!" + "\r\n"); //type 
+	    			fw.write("	" + "idInstance : String!" + "\r\n"); //type 
+	    			writeFields(o, fw, interfaces);
+	    			fw.write("}" + "\r\n" + "\r\n"); //End interface
+	    			
+	    			fw.write("type " + shortName + " implements I" + shortName + " {" + "\r\n");
+	    			fw.write("	" + shortName + "Type: String!" + "\r\n"); //type 
+	    			
+	    			writeFields(o, fw, interfaces);
+	    			fw.write("	" + "idInstance : String!" + "\r\n"); //type 
+	    			fw.write("}" + "\r\n" + "\r\n"); //End interface
+	        	}else{
+	
+	        		fw.write("type " + shortName + " ");
+	        		if(o.getSubClassOf().size() == 0)  fw.write("{" + "\r\n");
+	        		else{
+		        		int i = 0;
+		        		for(String subClassOf : o.getSubClassOf()){
+		        			index = subClassOf.lastIndexOf("/");
+		        			String shortNameSubClass = subClassOf.substring(index + 1);
+		        			if(i == 0) fw.write("implements I" + shortNameSubClass);
+		        			else fw.write(", I" + shortNameSubClass);
+		        			++i;
+		        		}
+		        		fw.write("{" + "\r\n");
+	        			
+	    				//write Field of interface in the type
+	        			for(String subClassOf : o.getSubClassOf()){
+	        				for(Object searchParent : createdObjects){
+	        					if(searchParent.getName().equals(subClassOf)){
+	        						//add Fields of parents to object
+	        						o.getFields().addAll(searchParent.getFields());
+	        						//writeFields(searchParent, fw,  interfaces);
+	        	        			index = subClassOf.lastIndexOf("/");
+	        	        			String shortNameSubClass = subClassOf.substring(index + 1);
+	        	        			fw.write("	" + shortNameSubClass + "Type: String!" + "\r\n"); //type 
+	        					}
+	        				}
+	        			}
 	        		}
-	        		fw.write("{" + "\r\n");
-        			
-    				//write Field of interface in the type
-        			for(String subClassOf : o.getSubClassOf()){
-        				for(Object searchParent : createdObjects){
-        					if(searchParent.getName().equals(subClassOf)){
-        						//add Fields of parents to object
-        						o.getFields().addAll(searchParent.getFields());
-        						//writeFields(searchParent, fw,  interfaces);
-        	        			index = subClassOf.lastIndexOf("/");
-        	        			String shortNameSubClass = subClassOf.substring(index + 1);
-        	        			fw.write("	" + shortNameSubClass + "Type: String!" + "\r\n"); //type 
-        					}
-        				}
-        			}
-        		}
-        		writeFields(o, fw,  interfaces);
-        		fw.write("	" + "idInstance : String!" + "\r\n"); //type 
-        		fw.write("}" + "\r\n" + "\r\n"); //End type/ interface
-        	}
-        }
-        
-
-
-        
-        //Queries
-        fw.write("type Query {" + "\r\n");
-        for(int i = 0; i < createdObjects.size(); ++i){
-        	
-        	Integer index = createdObjects.get(i).getName().lastIndexOf("/");
-			String shortNameSubClass = createdObjects.get(i).getName().substring(index + 1);
-			
-			String rangeField = shortNameSubClass;
-			if(interfaces.containsKey(createdObjects.get(i).getName()))  rangeField = "I"+rangeField;
-        	fw.write("	" + "all"+ shortNameSubClass + "s: [" + rangeField +"]" + "\r\n");
-        	fw.write("	" + "get"+ shortNameSubClass + "(id: String!): " + rangeField +"" + "\r\n");
-        		
-        }
-        fw.write("}" + "\r\n");
-        
-        fw.write("schema {" + "\r\n");
-        fw.write("	query: Query" + "\r\n");
-        fw.write("}" + "\r\n" + "\r\n");
-        fw.close();
-
-        createServer(createdObjects, interfaces);
-
-        String command = "javac -cp \"../../lib/*\" *.java";
-        Runtime.getRuntime().exec(command,null, new File(getServletContext().getRealPath("WEB-INF/classes/") + "serverGraphQL"));
+	        		writeFields(o, fw,  interfaces);
+	        		fw.write("	" + "idInstance : String!" + "\r\n"); //type 
+	        		fw.write("}" + "\r\n" + "\r\n"); //End type/ interface
+	        	}
+	        }
+	        
+	
+	
+	        
+	        //Queries
+	        fw.write("type Query {" + "\r\n");
+	        for(int i = 0; i < createdObjects.size(); ++i){
+	        	
+	        	Integer index = createdObjects.get(i).getName().lastIndexOf("/");
+				String shortNameSubClass = createdObjects.get(i).getName().substring(index + 1);
+				
+				String rangeField = shortNameSubClass;
+				if(interfaces.containsKey(createdObjects.get(i).getName()))  rangeField = "I"+rangeField;
+	        	fw.write("	" + "all"+ shortNameSubClass + "s: [" + rangeField +"]" + "\r\n");
+	        	fw.write("	" + "get"+ shortNameSubClass + "(id: String!): " + rangeField +"" + "\r\n");
+	        		
+	        }
+	        fw.write("}" + "\r\n");
+	        
+	        fw.write("schema {" + "\r\n");
+	        fw.write("	query: Query" + "\r\n");
+	        fw.write("}" + "\r\n" + "\r\n");
+	        fw.close();
+	
+	        createServer(createdObjects, interfaces);
+	
+	        String command = "javac -cp \"../../lib/*\" *.java";
+	        Runtime.getRuntime().exec(command,null, new File(getServletContext().getRealPath("WEB-INF/classes/") + "serverGraphQL"));
+		}
 
 	}
 	
@@ -1143,42 +1147,43 @@ public class Main extends HttpServlet{
 		password = request.getParameter("Password");
 		dbName = request.getParameter("DbName");
 		
-		
-		System.out.println(request.getServletContext().getContextPath().toString());
-		
-		System.out.println( "entro en post" +  getServletContext().getRealPath("WEB-INF/classes"));
-		
-		//destinationPathApiGraphQL = getServletContext().getRealPath("WEB-INF/resources/esquema.graphqls");
-		//fileDestination = getServletContext().getRealPath("WEB-INF/classes");
-		//System.out.println(fileDestination);
-		//System.out.println("aaa" + getClass().getClassLoader().getResourceAsStream("test.arff").toString());
-		/*
-		File f = new File(destinationPathApiGraphQL);
-		System.out.println(destinationPathApiGraphQL);
-		f.createNewFile();
 
-		//URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
-		System.out.println(destinationPathApiGraphQL);
 
-        System.out.println("----");
-        */
-        //System.out.println(this.getClass().getResource("esquema.jsp").getPath());
-		main();
+		boolean excepcio = false;
+			try {
+				main();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				excepcio = true;
+			}
+
 		
         PrintWriter writer = response.getWriter();
-
+        
+        response.setContentType( "text/html; charset=UTF-8" );
         
 		if(!url_hostlist.isEmpty() && !user.isEmpty() && !password.isEmpty() && !dbName.isEmpty()){
-	        writer.println("<html>Correcto</html>");
+			writer.println("<html>");
+
+		    if (excepcio) {
+		    	writer.println("No s'ha creat una Api graphQL, introdueix de nou les dades de connexió al virtuoso <br>");
+		    	writer.println("<a href= \"form.html\"> Enrrere </a>");
+		    }else{
+	        
+		    	writer.println("<a href= \"api.jsp\"> Api GraphQL </a> <br> <br>");
+		    	writer.println("<a href= \"index.html\"> Servidor GraphQL </a>");
+		    }
+	        writer.println("</html>");
+
 		}else{
 	        writer.println("<html>");
 	        writer.println("Omple tots els camps <br>");
-	        writer.println("<a href=\"index.jsp\"> Enrrere </a> <br>");
+	        writer.println("<a href=\"form.html\"> Enrrere </a> <br>");
 	        writer.println("</html>");
 	        
 		}
         writer.flush();
-		
+		writer.close();
 		
 	}
 	

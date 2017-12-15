@@ -40,6 +40,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -88,8 +90,7 @@ public class Main extends HttpServlet{
 	//static private String destinationPathApiGraphQL ;
 	//static private String fileDestination;
 	static public String fileDestination;
-	static private URL destinationPathApiGraphQL = ClassLoader.getSystemResource("esquema.graphqls");
-	static public boolean existsDatabase = true;
+	static Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
 	
 	static void getObjects(ArrayList<Object> objects, ArrayList<Field> fields, HashMap<String, ArrayList<String>> interfaces,  VirtGraph graph){
@@ -1009,10 +1010,7 @@ public class Main extends HttpServlet{
 		System.out.println(classLoader.getResource("/"));
 		System.out.println(classLoader.getResource("esquema.graphqls"));
 		
-		//fileDestination = getServletContext().getRealPath("WEB-INF/classes");
-		//fileDestination = classLoader.getResource(".").getFile();
-		fileDestination = getServletContext().getRealPath("WEB-INF/classes/");
-		System.out.println(	fileDestination);
+
 
 		
 		File[] files = new File(getServletContext().getRealPath("WEB-INF/classes/") + "serverGraphQL").listFiles();
@@ -1132,11 +1130,40 @@ public class Main extends HttpServlet{
 	        fw.write("	query: Query" + "\r\n");
 	        fw.write("}" + "\r\n" + "\r\n");
 	        fw.close();
-	
+	        
+			//fileDestination = getServletContext().getRealPath("WEB-INF/classes/");
+
+			
+			
+			
+			SimpleDateFormat dateFormat = new SimpleDateFormat("M.dd.yyyy-HH.mm.ss");
+	        //SimpleDateFormat dateFormat = new SimpleDateFormat("M");
+			String tiempo = dateFormat.format(timestamp);
+
+			String parentFile = new File(getServletContext().getRealPath("")).getParentFile().getPath();
+			fileDestination =parentFile + "/" + tiempo +"/WEB-INF/classes";
+			new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL").mkdirs();
+			new File(parentFile + "/" + tiempo +"/WEB-INF/lib").mkdirs();
+			
+			FileUtils.copyDirectory(new File(getServletContext().getRealPath("WEB-INF/lib/")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("index.html")), new File(parentFile + "/" + tiempo +"/index.html"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("createWar.jsp")), new File(parentFile + "/" + tiempo +"/createWar.jsp"));
+
+		
 	        createServer(createdObjects, interfaces);
 	
 	        String command = "javac -cp \"../../lib/*\" *.java";
-	        Runtime.getRuntime().exec(command,null, new File(getServletContext().getRealPath("WEB-INF/classes/") + "serverGraphQL"));
+	        //Runtime.getRuntime().exec(command,null, new File(getServletContext().getRealPath("WEB-INF/classes/") + "serverGraphQL"));
+	        Process p = Runtime.getRuntime().exec(command,null, new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL"));
+	        p.waitFor();
+	        
+	        /*
+	    	command = "jar -cvf " + tiempo + ".war *";
+
+	        p = Runtime.getRuntime().exec(command,null, new File(parentFile + "/" + tiempo));
+	        p.waitFor();
+	        */
+	        
 		}
 
 	}
@@ -1154,6 +1181,7 @@ public class Main extends HttpServlet{
 				main();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
+				System.out.println(e.getMessage());
 				excepcio = true;
 			}
 
@@ -1163,6 +1191,9 @@ public class Main extends HttpServlet{
         response.setContentType( "text/html; charset=UTF-8" );
         
 		if(!url_hostlist.isEmpty() && !user.isEmpty() && !password.isEmpty() && !dbName.isEmpty()){
+			SimpleDateFormat dateFormat = new SimpleDateFormat("M.dd.yyyy-HH.mm.ss");
+			String tiempo = dateFormat.format(timestamp);
+			
 			writer.println("<html>");
 
 		    if (excepcio) {
@@ -1171,7 +1202,8 @@ public class Main extends HttpServlet{
 		    }else{
 	        
 		    	writer.println("<a href= \"api.jsp\"> Api GraphQL </a> <br> <br>");
-		    	writer.println("<a href= \"index.html\"> Servidor GraphQL </a>");
+		    	writer.println("<a href= \" ./../" +  tiempo + "/index.html \"> Servidor GraphQL </a> <br> <br>");
+		    	writer.println("<a href= \" ./../" +  tiempo + "/createWar.jsp \"> .WAR del servidor GraphQL </a>");
 		    }
 	        writer.println("</html>");
 

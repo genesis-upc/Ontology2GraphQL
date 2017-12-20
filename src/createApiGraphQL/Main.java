@@ -34,6 +34,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -72,6 +73,7 @@ import org.apache.jena.rdf.model.StmtIterator;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -84,13 +86,12 @@ import virtuoso.jena.driver.*;
 public class Main extends HttpServlet{
 	
 	static String dbName, user, password, url_hostlist;
-	
-	//static private String fileDestination = Paths.get("./src/main/java").toAbsolutePath().normalize().toString();
-	//static private String destinationPathApiGraphQL = Paths.get("./src/main/resources/esquema.graphqls").toAbsolutePath().normalize().toString();
-	//static private String destinationPathApiGraphQL ;
-	//static private String fileDestination;
+	public Properties prop = new Properties();
 	static public String fileDestination;
 	static Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+	String tiempo;
+	
+	
 
 	
 	static void getObjects(ArrayList<Object> objects, ArrayList<Field> fields, HashMap<String, ArrayList<String>> interfaces,  VirtGraph graph){
@@ -304,8 +305,10 @@ public class Main extends HttpServlet{
 	}
 	
 	public static MethodSpec connectVirtuoso(){
+		
 		ClassName string = ClassName.get("java.lang", "String");
 		ClassName arrayList = ClassName.get("java.util", "ArrayList");
+		ClassName ex = ClassName.get("java.io" , "IOException");
 		
 		ClassName Query = ClassName.get("org.apache.jena.query", "Query");
 		ClassName QueryFactory = ClassName.get("org.apache.jena.query", "QueryFactory");
@@ -321,19 +324,24 @@ public class Main extends HttpServlet{
 		
 		MethodSpec method = MethodSpec.methodBuilder("connectVirtuoso")
 				.addParameter(String.class, "value")
-				.addCode("$T graph = new $T (\"$L\", \"$L\", \"$L\");\n", VirtGraph , VirtGraph, url_hostlist, user, password)
-				.addCode("$T sparql = $T.create(\"Select ?valor FROM <$L> WHERE {\"\n", Query, QueryFactory, dbName)
-				.addCode("+ \" <\"+ this.idTurtle +\"> <\"+  value + \"> ?valor.\"\n")
-				.addCode("+ \"}\");\n \n")
-				.addCode("$T vqe = $T.create (sparql, graph);\n",VirtuosoQueryExecution, VirtuosoQueryExecutionFactory)
-				.addCode("$T res = vqe.execSelect();\n", ResultSet)
 				.addCode("ArrayList<String> valor = new ArrayList<>();\n\n")
-				.addCode("while(res.hasNext()){\n")
-				.addCode("\t $T qs = res.next();\n", QuerySolution)
-				.addCode("\t valor.add(qs.get(\"?valor\").toString());\n")
-				.addCode("}\n\n")
-				.addCode("graph.close();\n")
+				.addCode("try{\n")
+		        .addCode("\t prop.load(getClass().getClassLoader().getResourceAsStream(\"../../config.properties\")); \n")
+		        .addCode("\t $T graph = new $T (prop.getProperty(\"url_hostlist\"), prop.getProperty(\"user\"), prop.getProperty(\"password\"));\n", VirtGraph , VirtGraph)
+				.addCode("\t $T sparql = $T.create(\"Select ?valor FROM <\"+ prop.getProperty(\"dbName\") +\"> WHERE {\"\n", Query, QueryFactory)
+				.addCode("\t + \" <\"+ this.idTurtle +\"> <\"+  value + \"> ?valor.\"\n")
+				.addCode("\t + \"}\");\n \n")
+				.addCode("\t $T vqe = $T.create (sparql, graph);\n",VirtuosoQueryExecution, VirtuosoQueryExecutionFactory)
+				.addCode("\t $T res = vqe.execSelect();\n", ResultSet)
+				.addCode("\t while(res.hasNext()){\n")
+				.addCode("\t \t$T qs = res.next();\n", QuerySolution)
+				.addCode("\t \tvalor.add(qs.get(\"?valor\").toString());\n")
+				.addCode("\t }\n\n")
+				.addCode("\tgraph.close();\n")
+				.addCode("}catch ($T ex){\n", ex)
+				.addCode("}\n")
 				.addCode("return valor;\n")
+
 			    .returns(listOfStrings)
 			    .addModifiers(Modifier.PUBLIC)
 			    .build();
@@ -343,6 +351,7 @@ public class Main extends HttpServlet{
 	public static MethodSpec connectVirtuosoWithId(){
 		ClassName string = ClassName.get("java.lang", "String");
 		ClassName arrayList = ClassName.get("java.util", "ArrayList");
+		ClassName ex = ClassName.get("java.io" , "IOException");
 		
 		ClassName Query = ClassName.get("org.apache.jena.query", "Query");
 		ClassName QueryFactory = ClassName.get("org.apache.jena.query", "QueryFactory");
@@ -359,18 +368,22 @@ public class Main extends HttpServlet{
 		MethodSpec method = MethodSpec.methodBuilder("connectVirtuoso")
 				.addParameter(String.class, "value")
 				.addParameter(String.class, "id")
-				.addCode("$T graph = new $T (\"$L\", \"$L\", \"$L\");\n", VirtGraph , VirtGraph, url_hostlist, user, password)
-				.addCode("$T sparql = $T.create(\"Select ?valor FROM <$L> WHERE {\"\n", Query, QueryFactory, dbName)
-				.addCode("+ \" <\"+ id +\"> <\"+  value + \"> ?valor.\"\n")
-				.addCode("+ \"}\");\n \n")
-				.addCode("$T vqe = $T.create (sparql, graph);\n",VirtuosoQueryExecution, VirtuosoQueryExecutionFactory)
-				.addCode("$T res = vqe.execSelect();\n", ResultSet)
 				.addCode("ArrayList<String> valor = new ArrayList<>();\n\n")
-				.addCode("while(res.hasNext()){\n")
-				.addCode("\t $T qs = res.next();\n", QuerySolution)
-				.addCode("\t valor.add(qs.get(\"?valor\").toString());\n")
-				.addCode("}\n\n")
-				.addCode("graph.close();\n")
+				.addCode("try{\n")
+				.addCode("\t prop.load(getClass().getClassLoader().getResourceAsStream(\"../../config.properties\")); \n")
+				.addCode("\t $T graph = new $T (prop.getProperty(\"url_hostlist\"), prop.getProperty(\"user\"), prop.getProperty(\"password\"));\n", VirtGraph , VirtGraph)
+				.addCode("\t $T sparql = $T.create(\"Select ?valor FROM <\"+ prop.getProperty(\"dbName\") +\"> WHERE {\"\n", Query, QueryFactory)
+				.addCode("\t + \" <\"+ id +\"> <\"+  value + \"> ?valor.\"\n")
+				.addCode("\t + \"}\");\n \n")
+				.addCode("\t $T vqe = $T.create (sparql, graph);\n",VirtuosoQueryExecution, VirtuosoQueryExecutionFactory)
+				.addCode("\t $T res = vqe.execSelect();\n", ResultSet)
+				.addCode("\t while(res.hasNext()){\n")
+				.addCode("\t \t $T qs = res.next();\n", QuerySolution)
+				.addCode("\t \t valor.add(qs.get(\"?valor\").toString());\n")
+				.addCode("\t }\n\n")
+				.addCode("\tgraph.close();\n")
+				.addCode("}catch ($T ex){\n", ex)
+				.addCode("}\n")
 				.addCode("return valor;\n")
 			    .returns(listOfStrings)
 			    .addModifiers(Modifier.PUBLIC)
@@ -557,8 +570,17 @@ public class Main extends HttpServlet{
 		Integer index = o.getName().lastIndexOf("/");
 		String nameObject = o.getName().substring(index + 1);
 		
+		
+		ClassName properties = ClassName.get("java.util", "Properties");
+
+		FieldSpec props = FieldSpec.builder(properties, "prop")
+			    .addModifiers(Modifier.PRIVATE)
+			    .initializer("new Properties()")
+			    .build();
+		
 		TypeSpec.Builder builderType = TypeSpec.classBuilder(nameObject)
-		.addModifiers(Modifier.PUBLIC);
+		.addModifiers(Modifier.PUBLIC)
+		.addField(props);
 		
 		//Crear interface + type
 		if(interfaces.containsKey(o.getName())){ 
@@ -669,67 +691,72 @@ public class Main extends HttpServlet{
 		ClassName QueryFactory = ClassName.get("org.apache.jena.query", "QueryFactory");
 		ClassName QuerySolution = ClassName.get("org.apache.jena.query", "QuerySolution");
 		ClassName ResultSet = ClassName.get("org.apache.jena.query", "ResultSet");
+		ClassName ex = ClassName.get("java.io" , "IOException");
 
 		ClassName VirtGraph = ClassName.get("virtuoso.jena.driver", "VirtGraph");
 		ClassName VirtuosoQueryExecution = ClassName.get("virtuoso.jena.driver", "VirtuosoQueryExecution");
 		ClassName VirtuosoQueryExecutionFactory = ClassName.get("virtuoso.jena.driver", "VirtuosoQueryExecutionFactory");
 		MethodSpec.Builder method = MethodSpec.constructorBuilder();
+		
+		method.addCode("$L = new $T<>();\n", shortNameObject + "s", ArrayList)
+		.addCode("try{\n")
+		.addCode("\t prop.load(getClass().getClassLoader().getResourceAsStream(\"../../config.properties\"));\n");
 		if(!interfaces.containsKey(nameObject)){
-					method.addCode("$L = new $T<>();\n", shortNameObject + "s", ArrayList)
-					.addCode("$T graph = new $T (\"$L\", \"$L\", \"$L\");\n", VirtGraph , VirtGraph,  url_hostlist, user, password)
-					.addCode("$T sparql = $T.create(\"Select ?subject FROM <$L> WHERE {\"\n", Query, QueryFactory, dbName)
-					.addCode("+ \" ?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <$L>.\"\n", nameObject)
-					.addCode("+ \"}\");\n \n")
-					.addCode("$T vqe = $T.create (sparql, graph);\n",VirtuosoQueryExecution, VirtuosoQueryExecutionFactory)
-					.addCode("$T res = vqe.execSelect();\n", ResultSet)
-					.addCode("while(res.hasNext()){\n")
-					.addCode("\t $T qs = res.next();\n", QuerySolution)
-					.addCode("\t String subject = qs.get(\"?subject\").toString();\n")
-					.addCode("\t $L.add(new $L(subject));\n", shortNameObject + "s", shortNameObject)
-					.addCode("}\n\n")
-					.addCode("graph.close();\n")
+					method.addCode("\t $T graph = new $T (prop.getProperty(\"url_hostlist\"), prop.getProperty(\"user\"), prop.getProperty(\"password\"));\n", VirtGraph , VirtGraph)
+					.addCode("\t $T sparql = $T.create(\"Select ?subject FROM <\"+ prop.getProperty(\"dbName\") +\"> WHERE {\"\n", Query, QueryFactory)
+					.addCode("\t + \" ?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <$L>.\"\n", nameObject)
+					.addCode("\t + \"}\");\n \n")
+					.addCode("\t $T vqe = $T.create (sparql, graph);\n",VirtuosoQueryExecution, VirtuosoQueryExecutionFactory)
+					.addCode("\t $T res = vqe.execSelect();\n", ResultSet)
+					.addCode("\t while(res.hasNext()){\n")
+					.addCode("\t \t $T qs = res.next();\n", QuerySolution)
+					.addCode("\t \t String subject = qs.get(\"?subject\").toString();\n")
+					.addCode("\t \t $L.add(new $L(subject));\n", shortNameObject + "s", shortNameObject)
+					.addCode("\t }\n\n")
+					.addCode("\t graph.close();\n")
 				    .addModifiers(Modifier.PUBLIC);
 		}else{
 
-			method.addCode("$L = new $T<>();\n", shortNameObject + "s", ArrayList)
-			.addCode("$T graph = new $T (\"$L\", \"$L\", \"$L\");\n", VirtGraph , VirtGraph,  url_hostlist, user, password)
-			.addCode("$T sparql = $T.create(\"Select * FROM <$L> WHERE {\"\n", Query, QueryFactory  ,dbName);
-			method.addCode("+ \" {?subject$L <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <$L>.}\"\n",shortNameObject, nameObject); 
+			method.addCode("\t $T graph = new $T (prop.getProperty(\"url_hostlist\"), prop.getProperty(\"user\"), prop.getProperty(\"password\"));\n", VirtGraph , VirtGraph)
+			.addCode("\t $T sparql = $T.create(\"Select * FROM <\"+ prop.getProperty(\"dbName\") +\"> WHERE {\"\n", Query, QueryFactory );
+			method.addCode("\t + \" {?subject$L <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <$L>.}\"\n",shortNameObject, nameObject); 
 			boolean first = true;
 			for(String subclass : interfaces.get(nameObject)){
 			  index = subclass.lastIndexOf("/");
 			  String shortNameSubClass = subclass.substring(index + 1);
-				  method.addCode("+ \" UNION \"\n"); 
-				  method.addCode("+ \" {?subject$L <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <$L>.}\"\n", shortNameSubClass, subclass); 
+				  method.addCode("\t + \" UNION \"\n"); 
+				  method.addCode("\t + \" {?subject$L <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <$L>.}\"\n", shortNameSubClass, subclass); 
 			}
 			
 
-			method.addCode("+ \"}\" ); \n")
-			.addCode("$T vqe = $T.create (sparql, graph);\n",VirtuosoQueryExecution, VirtuosoQueryExecutionFactory)
-			.addCode("$T res = vqe.execSelect();\n", ResultSet)
-			.addCode("while(res.hasNext()){\n")
-			.addCode("\t $T qs = res.next();\n", QuerySolution)
-			.addCode("\t String subject$L = null;\n", shortNameObject)
-			.addCode("\t if(qs.get(\"?subject$L\") != null) subject$L = qs.get(\"?subject$L\").toString();\n", shortNameObject,  shortNameObject, shortNameObject);
+			method.addCode("\t + \"}\" ); \n")
+			.addCode("\t $T vqe = $T.create (sparql, graph);\n",VirtuosoQueryExecution, VirtuosoQueryExecutionFactory)
+			.addCode("\t $T res = vqe.execSelect();\n", ResultSet)
+			.addCode("\t while(res.hasNext()){\n")
+			.addCode("\t \t $T qs = res.next();\n", QuerySolution)
+			.addCode("\t \t String subject$L = null;\n", shortNameObject)
+			.addCode("\t \t if(qs.get(\"?subject$L\") != null) subject$L = qs.get(\"?subject$L\").toString();\n", shortNameObject,  shortNameObject, shortNameObject);
 			for(String subclass : interfaces.get(nameObject)){
 				  index = subclass.lastIndexOf("/");
 				  String shortNameSubClass = subclass.substring(index + 1);
-				  method.addCode("\t String subject$L = null;\n", shortNameSubClass)
-				  .addCode("\t if(qs.get(\"?subject$L\") != null) subject$L = qs.get(\"?subject$L\").toString();\n", shortNameSubClass,  shortNameSubClass, shortNameSubClass);
+				  method.addCode("\t \t String subject$L = null;\n", shortNameSubClass)
+				  .addCode("\t \t if(qs.get(\"?subject$L\") != null) subject$L = qs.get(\"?subject$L\").toString();\n", shortNameSubClass,  shortNameSubClass, shortNameSubClass);
 			}
 			
-			method.addCode("\t if(subject$L != null)$L.add(new $L(subject$L)); \n", shortNameObject, shortNameObject + "s",shortNameObject, shortNameObject);
+			method.addCode("\t \t if(subject$L != null)$L.add(new $L(subject$L)); \n", shortNameObject, shortNameObject + "s",shortNameObject, shortNameObject);
 			for(String subclass : interfaces.get(nameObject)){
 				  index = subclass.lastIndexOf("/");
 				  String shortNameSubClass = subclass.substring(index + 1);
-			      method.addCode("\t else if(subject$L != null)$L.add(new $L(subject$L)); \n", shortNameSubClass,shortNameObject + "s",   shortNameSubClass, shortNameSubClass);
+			      method.addCode("\t \t else if(subject$L != null)$L.add(new $L(subject$L)); \n", shortNameSubClass,shortNameObject + "s",   shortNameSubClass, shortNameSubClass);
 			}
 			
-			method.addCode("}\n\n")
-			.addCode("graph.close();\n")
+			method.addCode("\t }\n\n")
+			.addCode("\t graph.close();\n")
 		    .addModifiers(Modifier.PUBLIC);
 
 		}
+		method.addCode("}catch ($T ex){\n", ex)
+			.addCode("}\n");
 		return method.build();
 
 	}
@@ -763,7 +790,8 @@ public class Main extends HttpServlet{
 		ClassName QueryFactory = ClassName.get("org.apache.jena.query", "QueryFactory");
 		ClassName QuerySolution = ClassName.get("org.apache.jena.query", "QuerySolution");
 		ClassName ResultSet = ClassName.get("org.apache.jena.query", "ResultSet");
-
+		ClassName ex = ClassName.get("java.io" , "IOException");
+		
 		ClassName VirtGraph = ClassName.get("virtuoso.jena.driver", "VirtGraph");
 		ClassName VirtuosoQueryExecution = ClassName.get("virtuoso.jena.driver", "VirtuosoQueryExecution");
 		ClassName VirtuosoQueryExecutionFactory = ClassName.get("virtuoso.jena.driver", "VirtuosoQueryExecutionFactory");
@@ -774,49 +802,53 @@ public class Main extends HttpServlet{
 		.addParameter(String.class, "id")
 	    .addModifiers(Modifier.PUBLIC)
 	    .returns(clase);
-		
-		
-		method.addCode("$T graph = new $T (\"$L\", \"$L\", \"$L\");\n", VirtGraph , VirtGraph,  url_hostlist, user, password)
-		.addCode("$T sparql = $T.create(\"Select * FROM <$L> WHERE {\"\n", Query, QueryFactory  ,dbName)
-		.addCode("+ \" {<\"")
-		.addCode("+ id ")
-		.addCode("+ \"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?tipo.}\"\n")
-		.addCode("+ \"}\" ); \n")
+		method.addCode("$L result = null; \n", returnType);
+		method.addCode("try{\n");
+		method.addCode("\t prop.load(getClass().getClassLoader().getResourceAsStream(\"../../config.properties\"));");
+		method.addCode("\t $T graph = new $T (prop.getProperty(\"url_hostlist\"), prop.getProperty(\"user\"), prop.getProperty(\"password\"));\n", VirtGraph , VirtGraph)
+		.addCode("\t $T sparql = $T.create(\"Select * FROM <\"+ prop.getProperty(\"dbName\") +\"> WHERE {\"\n", Query, QueryFactory)
+		.addCode("\t + \" {<\"")
+		.addCode("\t + id ")
+		.addCode("\t + \"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?tipo.}\"\n")
+		.addCode("\t + \"}\" ); \n")
 
-		.addCode("$T vqe = $T.create (sparql, graph);\n",VirtuosoQueryExecution, VirtuosoQueryExecutionFactory)
-		.addCode("$T res = vqe.execSelect();\n", ResultSet)
-		.addCode("String tipo = null;")
-		.addCode("while(res.hasNext()){\n")
-		.addCode("\t $T qs = res.next();\n", QuerySolution)
-		.addCode("\t if(qs.get(\"?tipo\") != null) tipo = qs.get(\"?tipo\").toString();\n")
-		.addCode("}\n\n")
-		.addCode("graph.close();\n")
+		.addCode("\t $T vqe = $T.create (sparql, graph);\n",VirtuosoQueryExecution, VirtuosoQueryExecutionFactory)
+		.addCode("\t $T res = vqe.execSelect();\n", ResultSet)
+		.addCode("\t String tipo = null;")
+		.addCode("\t while(res.hasNext()){\n")
+		.addCode("\t \t $T qs = res.next();\n", QuerySolution)
+		.addCode("\t \t if(qs.get(\"?tipo\") != null) tipo = qs.get(\"?tipo\").toString();\n")
+		.addCode("\t }\n\n")
+		.addCode("\t graph.close();\n")
+
 		
 		
-		
-		.addCode("$L result = null; \n", returnType)
-		.addCode("if(tipo != null){\n");
 		
 
-		method.addCode("\t if(tipo.equals($S)) result =  new $L(id);\n", nameObject, shortNameObject);
+		.addCode("\t if(tipo != null){\n");
+		
+
+		method.addCode("\t \t if(tipo.equals($S)) result =  new $L(id);\n", nameObject, shortNameObject);
 		if(interfaces.containsKey(nameObject)){
 			for(String subclass : interfaces.get(nameObject)){
 				 Integer index = subclass.lastIndexOf("/");
 				 String shortNameSubClass = subclass.substring(index + 1);
-				method.addCode("\t else if(tipo.equals($S)) result = new $L(id);\n", subclass, shortNameSubClass);
+				method.addCode("\t \t else if(tipo.equals($S)) result = new $L(id);\n", subclass, shortNameSubClass);
 			}
 		}
 
-		method.addCode("} else { \n")
-		.addCode("\t result = null; \n")
-		.addCode("} \n")
+		method.addCode("\t } else { \n")
+		.addCode("\t \t result = null; \n")
+		.addCode("\t } \n")
+		.addCode("}catch ($T ex){\n", ex)
+		.addCode("}\n")
 		.addCode("return result; \n");
 
 		
 		return method.build();
 
 	}
-	static void createRepository(Object o, HashMap<String, ArrayList<String>> interfaces, boolean isInterface, ArrayList<Object> createdObjects) throws IOException{
+	 void createRepository(Object o, HashMap<String, ArrayList<String>> interfaces, boolean isInterface, ArrayList<Object> createdObjects) throws IOException{
 		
 		Integer index = o.getName().lastIndexOf("/");
 		String nameObject = o.getName().substring(index + 1);
@@ -825,13 +857,21 @@ public class Main extends HttpServlet{
 		if(isInterface)  className = getClassName("I"+nameObject);
 		else className = getClassName(nameObject);
 		ClassName arrayList = ClassName.get("java.util", "ArrayList");
+		
 		TypeName listOfClassName = ParameterizedTypeName.get(arrayList, className);
 		TypeName nestedListOfClassName = ParameterizedTypeName.get(arrayList, listOfClassName);
 		
+		ClassName properties = ClassName.get("java.util", "Properties");
+
+		FieldSpec props = FieldSpec.builder(properties, "prop")
+			    .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
+			    .initializer("new Properties()")
+			    .build();
 		
 		TypeSpec.Builder builder = TypeSpec.classBuilder(nameObject + "Repository")
 			    .addModifiers(Modifier.PUBLIC)
-				.addField(listOfClassName, nameObject + "s", Modifier.PRIVATE, Modifier.FINAL);
+				.addField(listOfClassName, nameObject + "s", Modifier.PRIVATE, Modifier.FINAL)
+				.addField(props);
 		
 		builder.addMethod(constructorRepository(o.getName(), interfaces));
 		builder.addMethod(allInstancesRepository(nameObject, isInterface));
@@ -1003,9 +1043,7 @@ public class Main extends HttpServlet{
 	public void main() throws IOException, Exception {
 		
 		ClassLoader classLoader = getClass().getClassLoader();
-
-		System.out.println("herr");
-		System.out.println(classLoader.getResource("."));
+		System.out.println("holi"+ classLoader.getResourceAsStream("../../config.properties"));
 		System.out.println(classLoader.getResource(".").getFile().substring(1));
 		System.out.println(classLoader.getResource("/"));
 		System.out.println(classLoader.getResource("esquema.graphqls"));
@@ -1022,7 +1060,9 @@ public class Main extends HttpServlet{
 			 }
 		}
 		VirtGraph graph = null;
-		 graph = new VirtGraph (url_hostlist, user, password);
+		
+
+		graph = new VirtGraph (url_hostlist, user, password);
 
 	
 		
@@ -1146,23 +1186,34 @@ public class Main extends HttpServlet{
 			new File(parentFile + "/" + tiempo +"/WEB-INF/lib").mkdirs();
 			
 			FileUtils.copyDirectory(new File(getServletContext().getRealPath("WEB-INF/lib/")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib"));
+
+			/*
+			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/lib/graphql-java-tools-4.1.2.jar")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib/graphql-java-tools-4.1.2.jar"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/lib/graphql-java-5.0.jar")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib/graphql-java-5.0.jar"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/lib/graphql-java-servlet-4.4.0.jar")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib/graphql-java-servlet-4.4.0.jar"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/lib/javax.servlet-api-4.0.0.jar")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib/javax.servlet-api-4.0.0.jar"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/lib/jena-arq-3.4.0.jar")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib/jena-arq-3.4.0.jar"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/lib/jena-core-3.4.0.jar")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib/jena-core-3.4.0.jar"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/lib/kotlin-stdlib-1.1.4-3.jar")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib/kotlin-stdlib-1.1.4-3.jar"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/lib/virt-jena3-com.robertalmar.pcf-1.0.jar")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib/virt-jena3-com.robertalmar.pcf-1.0.jar"));
+			*/
+			FileUtils.copyFile(new File(getServletContext().getRealPath("editConfigFromServer.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/editConfigFromServer.java"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/classes/esquema.graphqls")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/esquema.graphqls"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("apiServidor.jsp")), new File(parentFile + "/" + tiempo +"/apiServidor.jsp"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("iniciServidor.jsp")), new File(parentFile + "/" + tiempo +"/iniciServidor.jsp"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("index.html")), new File(parentFile + "/" + tiempo +"/index.html"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("createWar.jsp")), new File(parentFile + "/" + tiempo +"/createWar.jsp"));
-
-		
-	        createServer(createdObjects, interfaces);
+			FileUtils.copyFile(new File(getServletContext().getRealPath("config.properties")), new File(parentFile + "/" + tiempo +"/config.properties"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("apiServidor.jsp")), new File(parentFile + "/" + tiempo +"/apiServidor.jsp"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("formServidor.jsp")), new File(parentFile + "/" + tiempo +"/formServidor.jsp"));
+	        
+			
+			createServer(createdObjects, interfaces);
 	
 	        String command = "javac -cp \"../../lib/*\" *.java";
-	        //Runtime.getRuntime().exec(command,null, new File(getServletContext().getRealPath("WEB-INF/classes/") + "serverGraphQL"));
 	        Process p = Runtime.getRuntime().exec(command,null, new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL"));
 	        p.waitFor();
-	        
-	        /*
-	    	command = "jar -cvf " + tiempo + ".war *";
 
-	        p = Runtime.getRuntime().exec(command,null, new File(parentFile + "/" + tiempo));
-	        p.waitFor();
-	        */
 	        
 		}
 
@@ -1174,8 +1225,22 @@ public class Main extends HttpServlet{
 		password = request.getParameter("Password");
 		dbName = request.getParameter("DbName");
 		
+		System.out.println(url_hostlist);
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("M.dd.yyyy-HH.mm.ss");
+		tiempo = dateFormat.format(timestamp);
+		
+	    prop.setProperty("url_hostlist", request.getParameter("Url_Virtuoso"));
+	    prop.setProperty("user", request.getParameter("Usuari"));
+	    prop.setProperty("password", request.getParameter("Password"));
+	    prop.setProperty("dbName", request.getParameter("DbName"));
+	    prop.setProperty("serverName", tiempo);
+	    
 
-
+	    FileWriter writerr = new FileWriter(new File(getServletContext().getRealPath("config.properties")));
+	    prop.store(writerr, "host settings");
+	    writerr.close();
+		
 		boolean excepcio = false;
 			try {
 				main();
@@ -1185,39 +1250,29 @@ public class Main extends HttpServlet{
 				excepcio = true;
 			}
 
-		
-        PrintWriter writer = response.getWriter();
-        
-        response.setContentType( "text/html; charset=UTF-8" );
+			
+
+		    
         
 		if(!url_hostlist.isEmpty() && !user.isEmpty() && !password.isEmpty() && !dbName.isEmpty()){
-			SimpleDateFormat dateFormat = new SimpleDateFormat("M.dd.yyyy-HH.mm.ss");
-			String tiempo = dateFormat.format(timestamp);
+
 			
-			writer.println("<html>");
 
 		    if (excepcio) {
-		    	writer.println("No s'ha creat una Api graphQL, introdueix de nou les dades de connexió al virtuoso <br>");
-		    	writer.println("<a href= \"form.html\"> Enrrere </a>");
+		    	request.setAttribute("error", "virtuoso");
+		        request.getRequestDispatcher("/error.jsp").forward(request, response);
 		    }else{
-	        
-		    	writer.println("<a href= \"api.jsp\"> Api GraphQL </a> <br> <br>");
-		    	writer.println("<a href= \" ./../" +  tiempo + "/index.html \"> Servidor GraphQL </a> <br> <br>");
-		    	writer.println("<a href= \" ./../" +  tiempo + "/createWar.jsp \"> .WAR del servidor GraphQL </a>");
+		    	request.setAttribute("tiempo", tiempo);
+		        request.getRequestDispatcher("/opcions.jsp").forward(request, response);
 		    }
-	        writer.println("</html>");
-
 		}else{
-	        writer.println("<html>");
-	        writer.println("Omple tots els camps <br>");
-	        writer.println("<a href=\"form.html\"> Enrrere </a> <br>");
-	        writer.println("</html>");
+	    	request.setAttribute("error", "campos");
+	        request.getRequestDispatcher("/error.jsp").forward(request, response);
 	        
 		}
-        writer.flush();
-		writer.close();
 		
 	}
+	
 	
 
 	

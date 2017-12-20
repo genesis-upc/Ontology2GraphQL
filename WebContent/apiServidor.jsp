@@ -4,6 +4,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
 <%
 String file = getServletContext().getRealPath("WEB-INF/classes/esquema.graphqls");
 
@@ -19,10 +22,6 @@ BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
 
 fis.close();
 %>
-<a href= "opcions.jsp"> Enrrere </a>
-
-</head>
-<body>
-
+<a href= "iniciServidor.jsp"> Enrrere </a>
 </body>
 </html>

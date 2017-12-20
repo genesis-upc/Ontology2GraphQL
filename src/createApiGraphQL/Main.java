@@ -1206,6 +1206,7 @@ public class Main extends HttpServlet{
 			FileUtils.copyFile(new File(getServletContext().getRealPath("config.properties")), new File(parentFile + "/" + tiempo +"/config.properties"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("apiServidor.jsp")), new File(parentFile + "/" + tiempo +"/apiServidor.jsp"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("formServidor.jsp")), new File(parentFile + "/" + tiempo +"/formServidor.jsp"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("bootstrap.min.css")), new File(parentFile + "/" + tiempo +"/bootstrap.min.css"));
 	        
 			
 			createServer(createdObjects, interfaces);

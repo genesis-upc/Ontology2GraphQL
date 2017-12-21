@@ -12,7 +12,8 @@ InputStream input = new FileInputStream(new File(getServletContext().getRealPath
 Properties prop = new Properties();
 prop.load(input);
 input.close();
-
+String error = "";
+if(request.getAttribute("error")!= null) error = (String)request.getAttribute("error");
 String actualUrl = "";
 if(prop.getProperty("url_hostlist") != null) actualUrl = prop.getProperty("url_hostlist");
 String actualUser = "";
@@ -37,30 +38,44 @@ if(prop.getProperty("dbName") != null) actualDBName = prop.getProperty("dbName")
 		        <tr>
 		        	<th align="right"> URL Virtuoso </th>
 		        	<td> <input type="text" size="45"  name="Url_Virtuoso" class="form-control" placeholder = "jdbc:virtuoso://localhost:1111"/> </td>
+		       		<td> <%=actualUrl %> </td>
 		        </tr>
 		        
 		        <tr>
 		        	<th align="right"> Usuari </th>
 		        	<td> <input type="text" size="45"  name="Usuari" class="form-control" placeholder = "dba"/> </td>
+		        	<td> <%=actualUser %> </td>
 		        </tr>
 		        
 		        <tr>
 		        	<th align="right"> Contrasenya </th>
 		        	<td> <input type="text" size="45"  name="Password" class="form-control" placeholder = "dba"/> </td>
+		        	 <td> <%=actualPassword %> </td>
 		        </tr>
 		        
 		        <tr>
 		        	<th align="right"> Nom de la base de dades </th>
 		        	<td> <input type="text" size="45"  name="DbName" class="form-control" placeholder = "http://localhost:8890/NOM"/> </td>
+		       		<td> <%=actualDBName %> </td>
 		        </tr>
 		        
 		        <tr> 
-		        	<td> <a href= "iniciServidor.jsp" class = "btn btn-primary"/> Cancelar </a> </td>
+		        	<td> <a href= "index.jsp" class = "btn btn-primary"/> Cancelar </a> </td>
 		        	<td colspan = "2" align ="right"> <input type="submit" value= "Editar paràmetres connexió virtuoso" class = "btn btn-primary"/> </td>
 		        </tr>
 		  
 		        
 		    </table>
 	    </form>
+	    
+	    	   <% if( error.equals("virtuoso") ) { %>
+			        <div class="alert alert-danger" align ="center">
+					  Les dades de connexió al servidor virtuoso no són vàlides introdueix-les de nou.
+					</div> 
+				<% } else if( error.equals("campos") ) { %>
+					 <div class="alert alert-danger" align ="center" >
+					  Omple tots els camps <br>
+					</div>	
+				<% } %>
 </body>
 </html>

@@ -1186,7 +1186,7 @@ public class Main extends HttpServlet{
 			new File(parentFile + "/" + tiempo +"/WEB-INF/lib").mkdirs();
 			
 			FileUtils.copyDirectory(new File(getServletContext().getRealPath("WEB-INF/lib/")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib"));
-
+			FileUtils.copyDirectory(new File(getServletContext().getRealPath("graphiQL-JS-CSS/")), new File(parentFile + "/" + tiempo +"/graphiQL-JS-CSS"));
 			/*
 			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/lib/graphql-java-tools-4.1.2.jar")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib/graphql-java-tools-4.1.2.jar"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/lib/graphql-java-5.0.jar")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib/graphql-java-5.0.jar"));
@@ -1197,15 +1197,14 @@ public class Main extends HttpServlet{
 			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/lib/kotlin-stdlib-1.1.4-3.jar")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib/kotlin-stdlib-1.1.4-3.jar"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/lib/virt-jena3-com.robertalmar.pcf-1.0.jar")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib/virt-jena3-com.robertalmar.pcf-1.0.jar"));
 			*/
-			FileUtils.copyFile(new File(getServletContext().getRealPath("editConfigFromServer.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/editConfigFromServer.java"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/editConfigFromServer.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/editConfigFromServer.java"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/classes/esquema.graphqls")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/esquema.graphqls"));
-			FileUtils.copyFile(new File(getServletContext().getRealPath("apiServidor.jsp")), new File(parentFile + "/" + tiempo +"/apiServidor.jsp"));
-			FileUtils.copyFile(new File(getServletContext().getRealPath("iniciServidor.jsp")), new File(parentFile + "/" + tiempo +"/iniciServidor.jsp"));
-			FileUtils.copyFile(new File(getServletContext().getRealPath("index.html")), new File(parentFile + "/" + tiempo +"/index.html"));
-			FileUtils.copyFile(new File(getServletContext().getRealPath("createWar.jsp")), new File(parentFile + "/" + tiempo +"/createWar.jsp"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/apiServidor.jsp")), new File(parentFile + "/" + tiempo +"/api.jsp"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/iniciServidor.jsp")), new File(parentFile + "/" + tiempo +"/index.jsp"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("servidor.html")), new File(parentFile + "/" + tiempo +"/servidor.html"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/createWar.jsp")), new File(parentFile + "/" + tiempo +"/createWar.jsp"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("config.properties")), new File(parentFile + "/" + tiempo +"/config.properties"));
-			FileUtils.copyFile(new File(getServletContext().getRealPath("apiServidor.jsp")), new File(parentFile + "/" + tiempo +"/apiServidor.jsp"));
-			FileUtils.copyFile(new File(getServletContext().getRealPath("formServidor.jsp")), new File(parentFile + "/" + tiempo +"/formServidor.jsp"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/formServidor.jsp")), new File(parentFile + "/" + tiempo +"/form.jsp"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("bootstrap.min.css")), new File(parentFile + "/" + tiempo +"/bootstrap.min.css"));
 	        
 			
@@ -1261,14 +1260,13 @@ public class Main extends HttpServlet{
 
 		    if (excepcio) {
 		    	request.setAttribute("error", "virtuoso");
-		        request.getRequestDispatcher("/error.jsp").forward(request, response);
+		        request.getRequestDispatcher("/index.jsp").forward(request, response);
 		    }else{
-		    	request.setAttribute("tiempo", tiempo);
-		        request.getRequestDispatcher("/opcions.jsp").forward(request, response);
+		        request.getRequestDispatcher("/menu.jsp").forward(request, response);
 		    }
 		}else{
 	    	request.setAttribute("error", "campos");
-	        request.getRequestDispatcher("/error.jsp").forward(request, response);
+	        request.getRequestDispatcher("/index.jsp").forward(request, response);
 	        
 		}
 		

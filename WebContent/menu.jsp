@@ -24,13 +24,13 @@ String serverName =  prop.getProperty("serverName");
 					<td> <a href= "api.jsp"  class="btn btn-outline-primary"> Veure esquema GraphQL  </a></td>
 			   </tr>
 			   <tr>
-					<td> <a href= " ./../<%=serverName%>/index.html"  class="btn btn-outline-primary"> Executar servidor GraphQL </a></td>
+					<td> <a href= " ./../<%=serverName%>/servidor.html"  class="btn btn-outline-primary"> Executar servidor GraphQL </a></td>
 			   </tr>
 			   <tr>
 					<td> <a href= " ./../<%=serverName%>/createWar.jsp"  class="btn btn-outline-primary"> Descargar .WAR del servidor GraphQL </a></td>
 			   </tr>
 			   <tr>
-					<td> <a href= " form.jsp?editar=true"  class="btn btn-outline-primary"> Editar paràmetres de connexió al virtuoso </a></td>
+					<td> <a href= " index.jsp?editar=true"  class="btn btn-outline-primary"> Editar paràmetres de connexió al virtuoso </a></td>
 			   </tr>
 	</table>
 

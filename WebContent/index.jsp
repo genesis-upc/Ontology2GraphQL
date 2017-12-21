@@ -13,34 +13,41 @@ String edit = "false";
 if(request.getParameter("editar") != null && request.getParameter("editar").toString().equals("true")) edit = "true";
 String value = "";
 
-
-
-InputStream input = new FileInputStream(new File(getServletContext().getRealPath("config.properties")));
-Properties prop = new Properties();
-prop.load(input);
-input.close();
-
-String parentFile = new File(getServletContext().getRealPath("")).getParentFile().getPath();
-String path =parentFile + "/" + prop.getProperty("serverName") +"/config.properties";
-
-InputStream input2 = new FileInputStream(new File(path));
-Properties prop2 = new Properties();
-prop2.load(input2);
-input2.close();
-
 String actualUrl = "";
-if(prop2.getProperty("url_hostlist") != null) actualUrl = prop2.getProperty("url_hostlist");
 String actualUser = "";
-if(prop2.getProperty("user") != null) actualUser = prop2.getProperty("user");
 String actualPassword = "";
-if(prop2.getProperty("password") != null) actualPassword = prop2.getProperty("password");
 String actualDBName = "";
-if(prop2.getProperty("dbName") != null) actualDBName = prop2.getProperty("dbName");
+String error = "";
+if(request.getAttribute("error")!= null) error = (String)request.getAttribute("error");
+if(edit.equals("true")){
+	InputStream input = new FileInputStream(new File(getServletContext().getRealPath("config.properties")));
+	Properties prop = new Properties();
+	prop.load(input);
+	input.close();
+	
+	String parentFile = new File(getServletContext().getRealPath("")).getParentFile().getPath();
+	String path =parentFile + "/" + prop.getProperty("serverName") +"/config.properties";
+	
+	InputStream input2 = new FileInputStream(new File(path));
+	Properties prop2 = new Properties();
+	prop2.load(input2);
+	input2.close();
+	
+	
+	if(prop2.getProperty("url_hostlist") != null) actualUrl = prop2.getProperty("url_hostlist");
+	
+	if(prop2.getProperty("user") != null) actualUser = prop2.getProperty("user");
+	
+	if(prop2.getProperty("password") != null) actualPassword = prop2.getProperty("password");
+	
+	if(prop2.getProperty("dbName") != null) actualDBName = prop2.getProperty("dbName");
+}
+
 
 %>
 	<% if (edit.equals("false")) { %>
 		<% value = "Crear servidor GaphQL per l'ontologia donada";%>
-	    <form action="./Main" method="post">
+	    <form action="./Main" method="post" >
 	<% } else if( edit.equals("true")) {  %>
 		<% value = "Editar paràmetres connexió virtuoso";%>
 	 	<form action="./EditConfigFromGenerator" method="post">
@@ -80,14 +87,20 @@ if(prop2.getProperty("dbName") != null) actualDBName = prop2.getProperty("dbName
 		        </tr>
 		        
 		        <tr> 
-		            <% if (edit.equals("true")) {%><td> <a href= "opcions.jsp" class = "btn btn-primary"/> Cancelar </a> </td>  <% }%>
+		            <% if (edit.equals("true")) {%><td> <a href= "menu.jsp" class = "btn btn-primary"/> Cancelar </a> </td>  <% }%>
 		        	<td colspan = "2" align ="right"> <input type="submit" value= "<%= value %> " class = "btn btn-primary"/> </td>
 		        </tr>
-		  
-		        
 		    </table>
 	    </form>
-	    
+	    		<% if( error.equals("virtuoso") ) { %>
+			        <div class="alert alert-danger" align ="center">
+					  Les dades de connexió al servidor virtuoso no són vàlides introdueix-les de nou.
+					</div> 
+				<% } else if( error.equals("campos") ) { %>
+					 <div class="alert alert-danger" align ="center" >
+					  Omple tots els camps <br>
+					</div>	
+				<% } %>
 
 </body>
 </html>

@@ -29,7 +29,7 @@ fis.close();
 %>
 
 
-<tr> <td> <a href= "opcions.jsp" class = "btn btn-primary" align ="center"> Enrrere </a> </td> </tr>
+<tr> <td> <a href= "menu.jsp" class = "btn btn-primary" align ="center"> Enrrere </a> </td> </tr>
 </table>
 </head>
 <body>

@@ -20,12 +20,15 @@ import virtuoso.jena.driver.VirtGraph;
 @WebServlet(urlPatterns = {"/EditConfigFromServer"})
 public class editConfigFromServer extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    	String url = request.getParameter("Url_Virtuoso");
+    	String user = request.getParameter("Usuari");
+    	String pass = request.getParameter("Password");
+    	String dbName = request.getParameter("DbName");
+		
+       if(!url.isEmpty() && !user.isEmpty() && !pass.isEmpty() && !dbName.isEmpty()){
 	    
 	    try{
-	    	String url = request.getParameter("Url_Virtuoso");
-	    	String user = request.getParameter("Usuari");
-	    	String pass = request.getParameter("Password");
+
 	    	VirtGraph graph = new VirtGraph (url, user, pass);
 	    	if(graph != null){
 
@@ -54,16 +57,20 @@ public class editConfigFromServer extends HttpServlet {
 			    
 			    input.close();
 
-			    request.getRequestDispatcher("/iniciServidor.jsp").forward(request, response);
+			    request.getRequestDispatcher("/index.jsp").forward(request, response);
 	    	}
 		  
 	    } catch (Exception ex){
-	    	/*
-	      request.setAttribute("error", "fromEdit");
-	      request.getRequestDispatcher("/error.jsp").forward(request, response);
-	      */
+	    
+	      request.setAttribute("error", "virtuoso");
+	      request.getRequestDispatcher("/form.jsp").forward(request, response);
+
 	    }
 	    
+       }else{
+		      request.setAttribute("error", "campos");
+		      request.getRequestDispatcher("/form.jsp").forward(request, response);
+       }
 
 		
 	    

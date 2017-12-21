@@ -26,7 +26,7 @@ BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
 
 fis.close();
 %>
-<tr> <td> <a href= "iniciServidor.jsp" class = "btn btn-primary" align ="center"> Enrrere </a> </td> </tr>
+<tr> <td> <a href= "index.jsp" class = "btn btn-primary" align ="center"> Enrrere </a> </td> </tr>
 </table>
 </body>
 </html>

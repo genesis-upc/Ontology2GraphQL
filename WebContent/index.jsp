@@ -59,31 +59,34 @@ if(edit.equals("true")){
 	    		<tr>
 		        	<th align="right"> </th>
 		        	<th> <font face = "verdana"> Nova connexió </font> </th>
-		        	<th> <font face = "verdana"> Paràmetres actuals </font> </th>
 		        </tr>
 		        <% }%>
 		        <tr>
 		        	<th align="right"> URL Virtuoso </th>
-		        	<td> <input type="text" size="45"  name="Url_Virtuoso" class="form-control" placeholder = "jdbc:virtuoso://localhost:1111"/> </td>
-		        	<% if (edit.equals("true")) {%> <td> <%=actualUrl %> </td> <% }%>
+		        	
+		        	<% if (edit.equals("true")) {%><td> <input type="text" size="45"  name="Url_Virtuoso" class="form-control" placeholder = <%=actualUrl %>> </td> 
+		        	<% } else {%><td> <input type="text" size="45"  name="Url_Virtuoso" class="form-control" placeholder = "jdbc:virtuoso://localhost:1111"> </td><%} %>
 		        </tr>
 		        
 		        <tr>
 		        	<th align="right"> Usuari </th>
-		        	<td> <input type="text" size="45"  name="Usuari" class="form-control" placeholder = "dba"/> </td>
-		        	<% if (edit.equals("true")) {%> <td> <%=actualUser %> </td>  <% }%>
+		        	<% if (edit.equals("true")) {%><td> <input type="text" size="45"  name="Usuari" class="form-control" placeholder = <%=actualUser %>> </td> 
+		        	<% } else {%><td> <input type="text" size="45"  name="Usuari" class="form-control" placeholder = "dba"> </td><%} %>
 		        </tr>
 		        
 		        <tr>
 		        	<th align="right"> Contrasenya </th>
-		        	<td> <input type="text" size="45"  name="Password" class="form-control" placeholder = "dba"/> </td>
-		        	<% if (edit.equals("true")){ %> <td> <%=actualPassword %> </td>  <% }%>
+		        	
+		        	<% if (edit.equals("true")) {%><td> <input type="text" size="45"  name="Password" class="form-control" placeholder =  <%=actualPassword %>> </td> 
+		        	<% } else {%><td> <input type="text" size="45"  name="Password" class="form-control" placeholder = "dba"> </td><%} %>
 		        </tr>
 		        
 		        <tr>
 		        	<th align="right"> Nom de la base de dades </th>
-		        	<td> <input type="text" size="45"  name="DbName" class="form-control" placeholder = "http://localhost:8890/NOM"/> </td>
-		        	<% if (edit.equals("true")) {%> <td> <%=actualDBName %> </td>  <% }%>
+		        	
+		        	<% if (edit.equals("true")) {%><td> <input type="text" size="45"  name="DbName"class="form-control" placeholder = <%=actualDBName %>> </td> 
+		        	<% } else {%><td> <input type="text" size="45"  name="DbName" class="form-control" placeholder = "http://localhost:8890/NOM"> </td><%} %>
+		        	
 		        </tr>
 		        
 		        <tr> 

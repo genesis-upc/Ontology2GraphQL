@@ -33,30 +33,25 @@ if(prop.getProperty("dbName") != null) actualDBName = prop.getProperty("dbName")
 	    		<tr>
 		        	<th align="right"> </th>
 		        	<th> <font face = "verdana"> Nova connexió </font> </th>
-		        	<th> <font face = "verdana"> Paràmetres actuals </font> </th>
 		        </tr>
 		        <tr>
 		        	<th align="right"> URL Virtuoso </th>
-		        	<td> <input type="text" size="45"  name="Url_Virtuoso" class="form-control" placeholder = "jdbc:virtuoso://localhost:1111"/> </td>
-		       		<td> <%=actualUrl %> </td>
+		        	<td> <input type="text" size="45"  name="Url_Virtuoso" class="form-control" placeholder = <%=actualUrl %>> </td>
 		        </tr>
 		        
 		        <tr>
 		        	<th align="right"> Usuari </th>
-		        	<td> <input type="text" size="45"  name="Usuari" class="form-control" placeholder = "dba"/> </td>
-		        	<td> <%=actualUser %> </td>
+		        	<td> <input type="text" size="45"  name="Usuari" class="form-control" placeholder = <%=actualUser %>> </td>
 		        </tr>
 		        
 		        <tr>
 		        	<th align="right"> Contrasenya </th>
-		        	<td> <input type="text" size="45"  name="Password" class="form-control" placeholder = "dba"/> </td>
-		        	 <td> <%=actualPassword %> </td>
+		        	<td> <input type="text" size="45"  name="Password" class="form-control" placeholder = <%=actualPassword %>> </td>
 		        </tr>
 		        
 		        <tr>
 		        	<th align="right"> Nom de la base de dades </th>
-		        	<td> <input type="text" size="45"  name="DbName" class="form-control" placeholder = "http://localhost:8890/NOM"/> </td>
-		       		<td> <%=actualDBName %> </td>
+		        	<td> <input type="text" size="45"  name="DbName" class="form-control" placeholder = <%=actualDBName %>> </td>
 		        </tr>
 		        
 		        <tr> 

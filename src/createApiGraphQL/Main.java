@@ -90,7 +90,7 @@ public class Main extends HttpServlet{
 	static public String fileDestination;
 	static Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 	String tiempo;
-	
+	private static String OS = System.getProperty("os.name").toLowerCase();
 	
 
 	
@@ -1185,8 +1185,7 @@ public class Main extends HttpServlet{
 			new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL").mkdirs();
 			new File(parentFile + "/" + tiempo +"/WEB-INF/lib").mkdirs();
 			
-			FileUtils.copyDirectory(new File(getServletContext().getRealPath("WEB-INF/lib/")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib"));
-			FileUtils.copyDirectory(new File(getServletContext().getRealPath("graphiQL-JS-CSS/")), new File(parentFile + "/" + tiempo +"/graphiQL-JS-CSS"));
+
 			/*
 			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/lib/graphql-java-tools-4.1.2.jar")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib/graphql-java-tools-4.1.2.jar"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/lib/graphql-java-5.0.jar")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib/graphql-java-5.0.jar"));
@@ -1197,6 +1196,19 @@ public class Main extends HttpServlet{
 			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/lib/kotlin-stdlib-1.1.4-3.jar")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib/kotlin-stdlib-1.1.4-3.jar"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/lib/virt-jena3-com.robertalmar.pcf-1.0.jar")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib/virt-jena3-com.robertalmar.pcf-1.0.jar"));
 			*/
+
+	        
+			
+			createServer(createdObjects, interfaces);
+	
+	        
+			FileUtils.copyDirectory(new File(getServletContext().getRealPath("WEB-INF/lib/")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib"));
+			
+	        String []cmd={"javac","-cp" , "../../lib/*","*.java"};
+	        Process p = Runtime.getRuntime().exec(cmd,null, new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL"));
+	        p.waitFor();
+	        
+	        
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/editConfigFromServer.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/editConfigFromServer.java"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/classes/esquema.graphqls")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/esquema.graphqls"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/apiServidor.jsp")), new File(parentFile + "/" + tiempo +"/api.jsp"));
@@ -1206,14 +1218,14 @@ public class Main extends HttpServlet{
 			FileUtils.copyFile(new File(getServletContext().getRealPath("config.properties")), new File(parentFile + "/" + tiempo +"/config.properties"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/formServidor.jsp")), new File(parentFile + "/" + tiempo +"/form.jsp"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("bootstrap.min.css")), new File(parentFile + "/" + tiempo +"/bootstrap.min.css"));
-	        
+			FileUtils.copyDirectory(new File(getServletContext().getRealPath("graphiQL-JS-CSS/")), new File(parentFile + "/" + tiempo +"/graphiQL-JS-CSS"));
 			
-			createServer(createdObjects, interfaces);
-	
+	        /*
 	        String command = "javac -cp \"../../lib/*\" *.java";
+	        System.out.println("Execut comanda: " + command + " a la ruta " + parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL");
 	        Process p = Runtime.getRuntime().exec(command,null, new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL"));
 	        p.waitFor();
-
+			*/
 	        
 		}
 
@@ -1272,7 +1284,23 @@ public class Main extends HttpServlet{
 		
 	}
 	
-	
+	public static boolean isWindows() {
+
+		return (OS.indexOf("win") >= 0);
+
+	}
+
+	public static boolean isMac() {
+
+		return (OS.indexOf("mac") >= 0);
+
+	}
+
+	public static boolean isUnix() {
+
+		return (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0 );
+
+	}
 
 	
 

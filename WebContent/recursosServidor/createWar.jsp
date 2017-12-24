@@ -10,7 +10,7 @@
 <%
 	String tiempo = new File(getServletContext().getRealPath(".")).getName();
     String command = "cmd /c start /wait jar -cvf " + tiempo + ".war *";
-
+	//String command = "jar -cvf " + tiempo + ".war *";
 
 	if(new File(getServletContext().getRealPath(tiempo + ".war")).exists() == false){
 		Process proc =Runtime.getRuntime().exec(command,null, new File(getServletContext().getRealPath(".")));

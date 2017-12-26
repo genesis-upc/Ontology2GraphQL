@@ -12,6 +12,13 @@ InputStream input = new FileInputStream(new File(getServletContext().getRealPath
 Properties prop = new Properties();
 prop.load(input);
 input.close();
+
+String appName =  prop.getProperty("appName");
+appName = "/../" + appName + "/menu.jsp";
+
+String principal = "";
+if(request.getParameter("principal") != null && request.getParameter("principal").toString().equals("true")) principal = "true";
+
 String error = "";
 if(request.getAttribute("error")!= null) error = (String)request.getAttribute("error");
 String actualUrl = "";
@@ -23,7 +30,15 @@ if(prop.getProperty("password") != null) actualPassword = prop.getProperty("pass
 String actualDBName = "";
 if(prop.getProperty("dbName") != null) actualDBName = prop.getProperty("dbName");
 
+
+
 %>
+<script type="text/javascript">
+  function returnApp()
+  {
+	
+  }
+</script>
 
 <body>
 	 	<form action="./EditConfigFromServer" method="post">
@@ -55,10 +70,10 @@ if(prop.getProperty("dbName") != null) actualDBName = prop.getProperty("dbName")
 		        </tr>
 		        
 		        <tr> 
-		        	<td> <a href= "index.jsp" class = "btn btn-primary"/> Cancelar </a> </td>
+		        	
+		        	<td> <a  href = "index.jsp"class = "btn btn-primary" align ="center" > Cancelar </a>  
 		        	<td colspan = "2" align ="right"> <input type="submit" value= "Editar paràmetres connexió virtuoso" class = "btn btn-primary"/> </td>
 		        </tr>
-		  
 		        
 		    </table>
 	    </form>

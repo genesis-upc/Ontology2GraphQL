@@ -939,6 +939,7 @@ public class Main extends HttpServlet{
 			    .addAnnotation(AnnotationSpec.builder(webServlet)
 	                    .addMember("value", "$L", "urlPatterns = \"/graphql\"")
 	                    .build());
+
 		
 		MethodSpec.Builder constructorQueryBuilder = MethodSpec.constructorBuilder()
 			    .addModifiers(Modifier.PUBLIC);
@@ -1203,17 +1204,18 @@ public class Main extends HttpServlet{
 	
 	        
 			FileUtils.copyDirectory(new File(getServletContext().getRealPath("WEB-INF/lib/")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/editConfigFromServer.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/editConfigFromServer.java"));
 			
 	        String []cmd={"javac","-cp" , "../../lib/*","*.java"};
 	        Process p = Runtime.getRuntime().exec(cmd,null, new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL"));
 	        p.waitFor();
 	        
 	        
-			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/editConfigFromServer.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/editConfigFromServer.java"));
+
 			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/classes/esquema.graphqls")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/esquema.graphqls"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/apiServidor.jsp")), new File(parentFile + "/" + tiempo +"/api.jsp"));
-			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/iniciServidor.jsp")), new File(parentFile + "/" + tiempo +"/index.jsp"));
-			FileUtils.copyFile(new File(getServletContext().getRealPath("servidor.html")), new File(parentFile + "/" + tiempo +"/servidor.html"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/menuServidor.jsp")), new File(parentFile + "/" + tiempo +"/index.jsp"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/servidor.html")), new File(parentFile + "/" + tiempo +"/servidor.html"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/createWar.jsp")), new File(parentFile + "/" + tiempo +"/createWar.jsp"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("config.properties")), new File(parentFile + "/" + tiempo +"/config.properties"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/formServidor.jsp")), new File(parentFile + "/" + tiempo +"/form.jsp"));
@@ -1247,6 +1249,7 @@ public class Main extends HttpServlet{
 	    prop.setProperty("password", request.getParameter("Password"));
 	    prop.setProperty("dbName", request.getParameter("DbName"));
 	    prop.setProperty("serverName", tiempo);
+	    prop.setProperty("appName", new File(getServletContext().getRealPath("config.properties")).getParentFile().getName());
 	    
 
 	    FileWriter writerr = new FileWriter(new File(getServletContext().getRealPath("config.properties")));
@@ -1284,25 +1287,7 @@ public class Main extends HttpServlet{
 		
 	}
 	
-	public static boolean isWindows() {
 
-		return (OS.indexOf("win") >= 0);
-
-	}
-
-	public static boolean isMac() {
-
-		return (OS.indexOf("mac") >= 0);
-
-	}
-
-	public static boolean isUnix() {
-
-		return (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0 );
-
-	}
-
-	
 
 
 }

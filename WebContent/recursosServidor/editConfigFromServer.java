@@ -1,10 +1,7 @@
 package serverGraphQL;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.*;
 import java.util.Properties;
 
 import javax.servlet.ServletException;
@@ -32,46 +29,74 @@ public class editConfigFromServer extends HttpServlet {
 	
 		    	VirtGraph graph = new VirtGraph (url, user, pass);
 		    	if(graph != null){
-	
-				    InputStream input = new FileInputStream(new File(getServletContext().getRealPath("config.properties")));
-				    Properties prop = new Properties();
-					Properties propFinal = new Properties();
-					prop.load(input);
-					
-					String serverName = getServletContext().getRealPath(".");
-					Integer index = serverName.lastIndexOf("\\");
-					serverName = serverName.substring(index + 1);
-					
-				    propFinal.setProperty("url_hostlist", request.getParameter("Url_Virtuoso"));
-				    propFinal.setProperty("user", request.getParameter("Usuari"));
-				    propFinal.setProperty("password", request.getParameter("Password"));
-				    propFinal.setProperty("dbName", request.getParameter("DbName"));
-				    propFinal.setProperty("serverName", serverName);
-				    
-				    String parentFile = new File(getServletContext().getRealPath("")).getParentFile().getPath();
-					String path =parentFile + "/" + serverName +"/config.properties";
-					
-	
-				    FileWriter writerr = new FileWriter(new File(path));
-				    propFinal.store(writerr, "host settings");
-				    writerr.close();
-				    
-				    input.close();
-	
-				    request.getRequestDispatcher("/index.jsp").forward(request, response);
+		    		String rootProp = getServletContext().getRealPath("config.properties");
+		    		String serverName = getServletContext().getRealPath(".");
+		    		String parentFile = new File(getServletContext().getRealPath("")).getParentFile().getPath();
+		    		
+		    		config conf = new config(parentFile, url, user, pass, dbName, serverName);
+		    		Properties prop = conf.saveConfig();
+		    		
+		    		if(prop.getProperty("url_hostlist") != null){System.out.println("entro 1"); request.setAttribute("actualUrl", prop.getProperty("url_hostlist"));}
+					if(prop.getProperty("user") != null) {request.setAttribute("actualUser", prop.getProperty("user"));}
+					if(prop.getProperty("password") != null) {request.setAttribute("actualPassword", prop.getProperty("password"));}
+					if(prop.getProperty("dbName") != null){request.setAttribute("actualDbName", prop.getProperty("dbName")); }
+		    		
+		    		request.setAttribute("error", "correct");
+				    request.getRequestDispatcher("/form.jsp").forward(request, response);
 		    	}
 			  
 		    } catch (Exception ex){
-		    
-		      request.setAttribute("error", "virtuoso");
-		      request.getRequestDispatcher("/form.jsp").forward(request, response);
+				String root = getServletContext().getRealPath("config.properties");
+				config conf = new config(root);
+				Properties prop = conf.loadConfig();
+				
+		
+				if(prop.getProperty("url_hostlist") != null){request.setAttribute("actualUrl", prop.getProperty("url_hostlist"));}
+				if(prop.getProperty("user") != null) {request.setAttribute("actualUser", prop.getProperty("user"));}
+				if(prop.getProperty("password") != null) {request.setAttribute("actualPassword", prop.getProperty("password"));}
+				if(prop.getProperty("dbName") != null){request.setAttribute("actualDbName", prop.getProperty("dbName")); }
+		        request.setAttribute("error", "virtuoso");
+		        request.getRequestDispatcher("/form.jsp").forward(request, response);
 	
 		    }
 		    
 	       }else{
-			      request.setAttribute("error", "campos");
-			      request.getRequestDispatcher("/form.jsp").forward(request, response);
+				String root = getServletContext().getRealPath("config.properties");
+				config conf = new config(root);
+				Properties prop = conf.loadConfig();
+				
+		
+				if(prop.getProperty("url_hostlist") != null){request.setAttribute("actualUrl", prop.getProperty("url_hostlist"));}
+				if(prop.getProperty("user") != null) {request.setAttribute("actualUser", prop.getProperty("user"));}
+				if(prop.getProperty("password") != null) {request.setAttribute("actualPassword", prop.getProperty("password"));}
+				if(prop.getProperty("dbName") != null){request.setAttribute("actualDbName", prop.getProperty("dbName")); }
+
+			    request.setAttribute("error", "campos");
+			    request.getRequestDispatcher("/form.jsp").forward(request, response);
 	       }	   
 	    }
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+		try{
+			String root = getServletContext().getRealPath("config.properties");
+			config conf = new config(root);
+			Properties prop = conf.loadConfig();
+			
+	
+			if(prop.getProperty("url_hostlist") != null){request.setAttribute("actualUrl", prop.getProperty("url_hostlist"));}
+			if(prop.getProperty("user") != null) {request.setAttribute("actualUser", prop.getProperty("user"));}
+			if(prop.getProperty("password") != null) {request.setAttribute("actualPassword", prop.getProperty("password"));}
+			if(prop.getProperty("dbName") != null){request.setAttribute("actualDbName", prop.getProperty("dbName")); }
+			request.setAttribute("error", "no error");
+			request.getRequestDispatcher("/form.jsp").forward(request, response);
+			
+		}catch(Exception e){
+			
+		}
+		
+		
+	}
+	
+
 	
 }

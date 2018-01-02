@@ -1832,7 +1832,12 @@ var GraphiQL = exports.GraphiQL = function (_React$Component) {
           onClick: this.handleToggleHistory,
           title: 'Show History',
           label: 'History'
-        })
+        }),
+        _react2.default.createElement(_ToolbarButton.ToolbarButton, {
+            onClick: this.enrrere,
+            title: 'Enrrere',
+            label: 'Enrrere'
+         })
       );
 
       var footer = (0, _find2.default)(children, function (child) {
@@ -2349,6 +2354,10 @@ var _initialiseProps = function _initialiseProps() {
       subscription.unsubscribe();
     }
   };
+  
+  this.enrrere = function () {
+	  window.location.href = "./index.jsp";
+	  };
 
   this.handlePrettifyQuery = function () {
     var editor = _this6.getQueryEditor();

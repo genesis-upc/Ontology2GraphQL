@@ -1062,7 +1062,7 @@ public class Main extends HttpServlet{
 		}
 		VirtGraph graph = null;
 		
-
+		System.out.println(url_hostlist +" "+  user +  " " +password);
 		graph = new VirtGraph (url_hostlist, user, password);
 
 	
@@ -1205,6 +1205,12 @@ public class Main extends HttpServlet{
 	        
 			FileUtils.copyDirectory(new File(getServletContext().getRealPath("WEB-INF/lib/")), new File(parentFile + "/" + tiempo +"/WEB-INF/lib"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/editConfigFromServer.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/editConfigFromServer.java"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/createWar.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/createWar.java"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/config.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/config.java"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/api.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/api.java"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/apiCtrl.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/apiCtrl.java"));
+
+			
 			
 	        String []cmd={"javac","-cp" , "../../lib/*","*.java"};
 	        Process p = Runtime.getRuntime().exec(cmd,null, new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL"));
@@ -1216,7 +1222,7 @@ public class Main extends HttpServlet{
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/apiServidor.jsp")), new File(parentFile + "/" + tiempo +"/api.jsp"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/menuServidor.jsp")), new File(parentFile + "/" + tiempo +"/index.jsp"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/servidor.html")), new File(parentFile + "/" + tiempo +"/servidor.html"));
-			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/createWar.jsp")), new File(parentFile + "/" + tiempo +"/createWar.jsp"));
+			//FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/createWar.jsp")), new File(parentFile + "/" + tiempo +"/createWar.jsp"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("config.properties")), new File(parentFile + "/" + tiempo +"/config.properties"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/formServidor.jsp")), new File(parentFile + "/" + tiempo +"/form.jsp"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("bootstrap.min.css")), new File(parentFile + "/" + tiempo +"/bootstrap.min.css"));
@@ -1239,6 +1245,7 @@ public class Main extends HttpServlet{
 		password = request.getParameter("Password");
 		dbName = request.getParameter("DbName");
 		
+		
 		System.out.println(url_hostlist);
 		
 		SimpleDateFormat dateFormat = new SimpleDateFormat("M.dd.yyyy-HH.mm.ss");
@@ -1260,7 +1267,6 @@ public class Main extends HttpServlet{
 			try {
 				main();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				System.out.println(e.getMessage());
 				excepcio = true;
 			}

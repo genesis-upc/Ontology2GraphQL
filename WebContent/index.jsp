@@ -9,18 +9,14 @@
 </head>
 <body> <br><br><br><br>
 <% 
-String edit = "false";
-if(request.getParameter("editar") != null && request.getParameter("editar").toString().equals("true")) edit = "true";
 String value = "";
-
-
 String error = "";
 if(request.getAttribute("error")!= null) error = (String)request.getAttribute("error");
 
 
 %>
 
-		<% value = "Crear servidor GaphQL per l'ontologia donada";%>
+		<% value = "Generar esquema i servidor GraphQL per l'ontologia donada";%>
 	    <form action="./Main" method="post" >
     		<center><h1>Connexió al servidor Virtuoso</h1></center>
     		<br><br>

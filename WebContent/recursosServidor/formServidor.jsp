@@ -3,44 +3,21 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Generació semi-automàtica d'APIs GraphQL</title>
 <link href = "bootstrap.min.css" type = "text/css" rel= "stylesheet">
 </head>
-<% 
-InputStream input = new FileInputStream(new File(getServletContext().getRealPath("config.properties")));
-Properties prop = new Properties();
-prop.load(input);
-input.close();
 
-String appName =  prop.getProperty("appName");
-appName = "/../" + appName + "/menu.jsp";
+<%
 
-String principal = "";
-if(request.getParameter("principal") != null && request.getParameter("principal").toString().equals("true")) principal = "true";
-
-String error = "";
-if(request.getAttribute("error")!= null) error = (String)request.getAttribute("error");
-String actualUrl = "";
-if(prop.getProperty("url_hostlist") != null) actualUrl = prop.getProperty("url_hostlist");
-String actualUser = "";
-if(prop.getProperty("user") != null) actualUser = prop.getProperty("user");
-String actualPassword = "";
-if(prop.getProperty("password") != null) actualPassword = prop.getProperty("password");
-String actualDBName = "";
-if(prop.getProperty("dbName") != null) actualDBName = prop.getProperty("dbName");
-
-
+	 String actualUrl= (String) request.getAttribute("actualUrl");
+     String actualPassword = (String) request.getAttribute("actualPassword");
+     String actualDBName = (String) request.getAttribute("actualDbName");
+     String actualUser = (String) request.getAttribute("actualUser");
+     String error = (String) request.getAttribute("error");
 
 %>
-<script type="text/javascript">
-  function returnApp()
-  {
-	
-  }
-</script>
 
-<body>
+<body> <br><br><br><br>
 	 	<form action="./EditConfigFromServer" method="post">
 	 	    <center><h1>Connexió al servidor Virtuoso</h1></center>
     		<br><br>
@@ -51,7 +28,7 @@ if(prop.getProperty("dbName") != null) actualDBName = prop.getProperty("dbName")
 		        </tr>
 		        <tr>
 		        	<th align="right"> URL Virtuoso </th>
-		        	<td> <input type="text" size="45"  name="Url_Virtuoso" class="form-control" placeholder = <%=actualUrl %>> </td>
+		        	<td> <input type="text" size="45"  name="Url_Virtuoso" class="form-control" placeholder = <%= actualUrl%>> </td>
 		        </tr>
 		        
 		        <tr>
@@ -85,6 +62,10 @@ if(prop.getProperty("dbName") != null) actualDBName = prop.getProperty("dbName")
 				<% } else if( error.equals("campos") ) { %>
 					 <div class="alert alert-danger" align ="center" >
 					  Omple tots els camps <br>
+					</div>	
+				<% } else if( error.equals("correct") ) { %>
+					 <div class="alert alert-success" align ="center" >
+					  Editat correctament <br>
 					</div>	
 				<% } %>
 </body>

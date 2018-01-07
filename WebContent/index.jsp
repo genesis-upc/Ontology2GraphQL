@@ -16,9 +16,9 @@ if(request.getAttribute("error")!= null) error = (String)request.getAttribute("e
 
 %>
 
-		<% value = "Generar esquema i servidor GraphQL per l'ontologia donada";%>
+		<% value = "Generar l'esquema GraphQL i servidor GraphQL";%>
 	    <form action="./Main" method="post" >
-    		<center><h1>Connexió al servidor Virtuoso</h1></center>
+    		<center><h1>Connexió a la base de dades</h1></center>
     		<br><br>
 	    	<table align= "center">
 	    		<tr>
@@ -26,7 +26,7 @@ if(request.getAttribute("error")!= null) error = (String)request.getAttribute("e
 		        	<th> <font face = "verdana"> Nova connexió </font> </th>
 		        </tr>
 		        <tr>
-		        	<th align="right"> URL Virtuoso </th>
+		        	<th align="right"> Adreça servidor </th>
 		        	
 		        
 		        	<td> <input type="text" size="45"  name="Url_Virtuoso" class="form-control" placeholder = "jdbc:virtuoso://localhost:1111"> </td>
@@ -45,7 +45,7 @@ if(request.getAttribute("error")!= null) error = (String)request.getAttribute("e
 		        </tr>
 		        
 		        <tr>
-		        	<th align="right"> Nom de la base de dades </th>
+		        	<th align="right"> Base de dades </th>
 		        	
 		        	
 		        	<td> <input type="text" size="45"  name="DbName" class="form-control" placeholder = "http://localhost:8890/NOM"> </td>

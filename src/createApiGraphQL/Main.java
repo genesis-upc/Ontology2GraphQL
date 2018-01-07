@@ -404,11 +404,16 @@ public class Main extends HttpServlet{
 
 	public static void addFields(Object o, HashMap<String, ArrayList<String>> interfaces, ArrayList<MethodSpec> methods , boolean isInterface){
 		for(Field field : o.getFields()){
+			
+			
+			
 			Integer index = field.getName().lastIndexOf("/");
 			String nameField = field.getName().substring(index + 1);
 			
 			index = field.getRange().lastIndexOf("/");
 			String rangeField = field.getRange().substring(index + 1);
+			
+
 			
 			String rangeFieldNoModificado = rangeField;
 			
@@ -423,11 +428,13 @@ public class Main extends HttpServlet{
 			
 			//See if its [], [[]] or nothing
 			int contadorList = 0;
+			boolean nulo = true;
 			if(field.getModifier() != null){
 				if(field.getModifier().getClass().equals(List.class)) ++contadorList;
 				if(field.getModifier().getCombinedWith() != null){
 					for(Modificador m : field.getModifier().getCombinedWith()){
 						if(m.getClass().equals(List.class)) ++contadorList;
+						if(m.getClass().equals(NonNull.class)) nulo = false;
 					}
 				}
 			}
@@ -464,9 +471,12 @@ public class Main extends HttpServlet{
 						if(rangeField.equals("String")) methodBuild.addStatement("for(String value:$L) $L.add(modifyScalarValue(value))", nameField, nameField + "s");
 				    	else if(rangeField.equals("Integer")) methodBuild.addStatement("for(String value:$L) $L.add($L.parse$L(modifyScalarValue(value)))", nameField, nameField + "s", rangeField, "Int");
 				    	else methodBuild.addStatement("for(String value:$L) $L.add($L.parse$L(modifyScalarValue(value)))", nameField, nameField + "s", rangeField, rangeField);
-						
-						methodBuild.addStatement("if($L.size() == 0) return null", nameField + "s");
-						methodBuild.addStatement("else return $L", nameField + "s");
+						if(nulo){
+							methodBuild.addStatement("if($L.size() == 0) return null", nameField + "s");
+							methodBuild.addStatement("else return $L", nameField + "s");
+						}else if(!nulo){
+							methodBuild.addStatement("return $L", nameField + "s");
+						}
 					}else {
 						methodBuild.addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
 					}
@@ -492,8 +502,12 @@ public class Main extends HttpServlet{
 							methodBuild.addStatement("$T<String> $L = connectVirtuoso(\"$L\")", arrayList, nameField, field.getName());
 							methodBuild.addStatement("ArrayList<$L> $L = new ArrayList<>()", rangeField, nameField+ "s");
 							methodBuild.addStatement("for(String id:$L) $L.add(new $L(id))", nameField, nameField + "s", rangeField);
-							methodBuild.addStatement("if($L.size() == 0) return null", nameField + "s");
-							methodBuild.addStatement("else return $L", nameField + "s");
+							if(nulo){
+								methodBuild.addStatement("if($L.size() == 0) return null", nameField + "s");
+								methodBuild.addStatement("else return $L", nameField + "s");
+							}else if(!nulo){
+								methodBuild.addStatement("return $L", nameField + "s");
+							}
 						}else {
 							methodBuild.addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
 						}
@@ -548,8 +562,15 @@ public class Main extends HttpServlet{
 							methodBuild.addCode("\t else $L.add(new $L(id)); \n" , nameField+ "s", rangeFieldNoModificado );
 							
 							methodBuild.addCode("}\n");
-							methodBuild.addStatement("if($L.size() == 0) return null", nameField + "s");
-							methodBuild.addStatement("else return $L", nameField+ "s");
+							
+							if(nulo){
+								methodBuild.addStatement("if($L.size() == 0) return null", nameField + "s");
+								methodBuild.addStatement("else return $L", nameField+ "s");
+							}else if(!nulo){
+								methodBuild.addStatement("return $L", nameField + "s");
+							}
+							
+
 						}else {
 							methodBuild.addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
 						}

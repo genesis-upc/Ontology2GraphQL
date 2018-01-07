@@ -19,7 +19,7 @@
 
 <body> <br><br><br><br>
 	 	<form action="./EditConfigFromServer" method="post">
-	 	    <center><h1>Connexió al servidor Virtuoso</h1></center>
+	 	    <center><h1>Connexió a la base de dades</h1></center>
     		<br><br>
 	    	<table align= "center">
 	    		<tr>
@@ -27,7 +27,7 @@
 		        	<th> <font face = "verdana"> Nova connexió </font> </th>
 		        </tr>
 		        <tr>
-		        	<th align="right"> URL Virtuoso </th>
+		        	<th align="right">Adreça servidor </th>
 		        	<td> <input type="text" size="45"  name="Url_Virtuoso" class="form-control" placeholder = <%= actualUrl%>> </td>
 		        </tr>
 		        
@@ -42,7 +42,7 @@
 		        </tr>
 		        
 		        <tr>
-		        	<th align="right"> Nom de la base de dades </th>
+		        	<th align="right"> Base de dades </th>
 		        	<td> <input type="text" size="45"  name="DbName" class="form-control" placeholder = <%=actualDBName %>> </td>
 		        </tr>
 		        

@@ -14,12 +14,14 @@
 </style>
 </head>
 <body>
-    		<center><h1>Esquema GraphQL<h1></center>
-    		<br><br>
+<center><h1>Esquema GraphQL<h1></center>
+<br><br>
 <a href="index.jsp" class = "btn btn-primary" align ="center" id="btndisclaimer"> Enrrere </a>
 <table align = "center">
-<% String api= (String) request.getAttribute("esquema"); %>
-<%= api%>
+	<% String esquema= (String) request.getAttribute("esquema"); %>
+	<%= esquema%>
 </table>
 </body>
 </html>
+
+

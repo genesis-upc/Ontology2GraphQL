@@ -18,8 +18,8 @@ public class esquemaCtrl extends HttpServlet{
 			request.getRequestDispatcher("/esquema.jsp").forward(request, response);
 		}catch(Exception e){
 			
-		}
-		
+		}	
 	}
-
 }
+
+

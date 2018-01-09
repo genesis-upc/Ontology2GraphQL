@@ -1240,7 +1240,7 @@ public class Main extends HttpServlet{
 	        
 
 			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/classes/esquema.graphqls")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/esquema.graphqls"));
-			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/esquemaServidor.jsp")), new File(parentFile + "/" + tiempo +"/esquema.jsp"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/esquema.jsp")), new File(parentFile + "/" + tiempo +"/esquema.jsp"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/menuServidor.jsp")), new File(parentFile + "/" + tiempo +"/index.jsp"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/servidor.html")), new File(parentFile + "/" + tiempo +"/servidor.html"));
 			//FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/createWar.jsp")), new File(parentFile + "/" + tiempo +"/createWar.jsp"));

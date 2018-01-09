@@ -6,12 +6,11 @@ public class esquema {
 	private String contenido;
 	
 	public esquema(){
-		
+		contenido = "";
 	}
 	
 	public String getEsquema(String url){
 		String file = url;
-		String result = "";
 		try{
 
 		FileInputStream fis= new FileInputStream(file);
@@ -20,19 +19,19 @@ public class esquema {
 			String line = reader.readLine();
 			while(line != null){
 				
-				result = result.concat("<tr> <td align =\"left\">");
+				contenido = contenido.concat("<tr> <td align =\"left\">");
 				
-				if(line.contains("{") ) result = result.concat("<font face=\"verdana\">" +line + "</font> <br>  ");
-				else if(line.contains("}"))result = result.concat("<font face=\"verdana\">" + line + "</font><br> "); 
-				else result = result.concat(" &nbsp;&nbsp;&nbsp;&nbsp;" + "<font face=\"verdana\">" + line + "</font> <br>" ); 
+				if(line.contains("{") ) contenido = contenido.concat("<font face=\"verdana\">" +line + "</font> <br>  ");
+				else if(line.contains("}"))contenido = contenido.concat("<font face=\"verdana\">" + line + "</font><br> "); 
+				else contenido = contenido.concat(" &nbsp;&nbsp;&nbsp;&nbsp;" + "<font face=\"verdana\">" + line + "</font> <br>" ); 
 			    line = reader.readLine();
-			    result = result.concat("</td> </tr> ");
+			    contenido = contenido.concat("</td> </tr> ");
 			}           
 
 		fis.close();
 		}catch (Exception e){
 			
 		}
-		return result;
+		return contenido;
 	}
 }

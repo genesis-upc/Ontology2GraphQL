@@ -1,15 +1,15 @@
 package serverGraphQL;
 import java.io.*;
 import java.util.*;
-public class api {
+public class esquema {
 
 	private String contenido;
 	
-	public api(){
+	public esquema(){
 		
 	}
 	
-	public String getApi(String url){
+	public String getEsquema(String url){
 		String file = url;
 		String result = "";
 		try{

@@ -1228,8 +1228,8 @@ public class Main extends HttpServlet{
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/editConfigFromServer.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/editConfigFromServer.java"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/createWar.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/createWar.java"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/config.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/config.java"));
-			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/api.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/api.java"));
-			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/apiCtrl.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/apiCtrl.java"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/esquema.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/esquema.java"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/esquemaCtrl.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/esquemaCtrl.java"));
 
 			
 			
@@ -1240,7 +1240,7 @@ public class Main extends HttpServlet{
 	        
 
 			FileUtils.copyFile(new File(getServletContext().getRealPath("WEB-INF/classes/esquema.graphqls")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/esquema.graphqls"));
-			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/apiServidor.jsp")), new File(parentFile + "/" + tiempo +"/api.jsp"));
+			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/esquemaServidor.jsp")), new File(parentFile + "/" + tiempo +"/esquema.jsp"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/menuServidor.jsp")), new File(parentFile + "/" + tiempo +"/index.jsp"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/servidor.html")), new File(parentFile + "/" + tiempo +"/servidor.html"));
 			//FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/createWar.jsp")), new File(parentFile + "/" + tiempo +"/createWar.jsp"));

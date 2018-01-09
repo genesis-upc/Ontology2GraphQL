@@ -49,7 +49,7 @@
 		        <tr> 
 		        	
 		        	<td> <a  href = "index.jsp"class = "btn btn-primary" align ="center" > Cancelar </a>  
-		        	<td colspan = "2" align ="right"> <input type="submit" value= "Editar paràmetres connexió virtuoso" class = "btn btn-primary"/> </td>
+		        	<td colspan = "2" align ="right"> <input type="submit" value= "Editar paràmetres de connexió" class = "btn btn-primary"/> </td>
 		        </tr>
 		        
 		    </table>

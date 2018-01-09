@@ -7,15 +7,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {"/getApi"})
-public class apiCtrl extends HttpServlet{
+@WebServlet(urlPatterns = {"/getEsquema"})
+public class esquemaCtrl extends HttpServlet{
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-		api ap = new api();
-		String result = ap.getApi(getServletContext().getRealPath("WEB-INF/classes/esquema.graphqls"));
+		esquema es = new esquema();
+		String result = es.getEsquema(getServletContext().getRealPath("WEB-INF/classes/esquema.graphqls"));
 		try{
-		request.setAttribute("api", result);
-		request.getRequestDispatcher("/api.jsp").forward(request, response);
+			request.setAttribute("esquema", result);
+			request.getRequestDispatcher("/esquema.jsp").forward(request, response);
 		}catch(Exception e){
 			
 		}

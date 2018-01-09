@@ -18,10 +18,7 @@
     		<br><br>
 <a href="index.jsp" class = "btn btn-primary" align ="center" id="btndisclaimer"> Enrrere </a>
 <table align = "center">
-<%
-String api= (String) request.getAttribute("api");
-
-%>
+<% String api= (String) request.getAttribute("esquema"); %>
 <%= api%>
 </table>
 </body>

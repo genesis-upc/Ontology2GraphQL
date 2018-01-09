@@ -22,13 +22,11 @@ public class esquema {
 				
 				result = result.concat("<tr> <td align =\"left\">");
 				
-				// out.println("<tr> <td align =\"left\">");
-				if(line.contains("{") ) result = result.concat("<font face=\"verdana\">" +line + "</font> <br>  "); //out.println("<font face=\"verdana\">" +line + "</font> <br>  " );//out.println(line + "<br>");
-				else if(line.contains("}"))result = result.concat("<font face=\"verdana\">" + line + "</font><br> "); //out.println("<font face=\"verdana\">" + line + "</font><br> " );
-				else result = result.concat(" &nbsp;&nbsp;&nbsp;&nbsp;" + "<font face=\"verdana\">" + line + "</font> <br>" ); //out.println(" &nbsp;&nbsp;&nbsp;&nbsp;" + "<font face=\"verdana\">" + line + "</font> <br>" );
+				if(line.contains("{") ) result = result.concat("<font face=\"verdana\">" +line + "</font> <br>  ");
+				else if(line.contains("}"))result = result.concat("<font face=\"verdana\">" + line + "</font><br> "); 
+				else result = result.concat(" &nbsp;&nbsp;&nbsp;&nbsp;" + "<font face=\"verdana\">" + line + "</font> <br>" ); 
 			    line = reader.readLine();
 			    result = result.concat("</td> </tr> ");
-			    //out.println("</td> </tr> ");
 			}           
 
 		fis.close();

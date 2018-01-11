@@ -25,7 +25,7 @@
     <br><br>
     <div class="grid-container">
 	  <div class="grid-item"><a href= "getEsquema"  class="btn btn-outline-primary btn-lg"> Veure esquema GraphQL  </a></div>
-	  <div class="grid-item"><a href= "servidor.html"  class="btn btn-outline-primary btn-lg"> Executar consultes al servidor GraphQL </a></div>
+	  <div class="grid-item"><a href= "servidor.html"  class="btn btn-outline-primary btn-lg"> Executar consultes a l'API GraphQL </a></div>
 	  <div class="grid-item"><a href= "createWar"  class="btn btn-outline-primary btn-lg"> Descarregar l'aplicació web de l'API GraphQL </a></div>
 	  <div class="grid-item"><a href= "EditConfigFromServer"  class="btn btn-outline-primary btn-lg"> Editar paràmetres de connexió a la base de dades </a></div>
 	</div>

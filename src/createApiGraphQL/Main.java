@@ -666,7 +666,7 @@ public class Main extends HttpServlet{
 				index = subClass.lastIndexOf("/");
 				String nameSubClass= subClass.substring(index + 1);
 				
-				System.out.println("sub " + o.getName() + " "+nameSubClass);
+				//System.out.println("sub " + o.getName() + " "+nameSubClass);
 				
 				builderType.addSuperinterface(ClassName.get("serverGraphQL", "I"+nameSubClass));
 
@@ -1032,7 +1032,6 @@ public class Main extends HttpServlet{
 		builderGraphQLEndPoint.addMethod(constructorGraphQLEndPoint.build());
 		
 		//Query
-		System.out.println("build query" + fileDestination);
 		TypeSpec typeSpec = builderQuery.build();
 		JavaFile javaFile = JavaFile.builder("serverGraphQL", typeSpec)
 			    .build();
@@ -1065,10 +1064,11 @@ public class Main extends HttpServlet{
 	public void main() throws IOException, Exception {
 		
 		ClassLoader classLoader = getClass().getClassLoader();
-		System.out.println("holi"+ classLoader.getResourceAsStream("../../config.properties"));
-		System.out.println(classLoader.getResource(".").getFile().substring(1));
-		System.out.println(classLoader.getResource("/"));
-		System.out.println(classLoader.getResource("esquema.graphqls"));
+		
+		//System.out.println("holi"+ classLoader.getResourceAsStream("../../config.properties"));
+		//System.out.println(classLoader.getResource(".").getFile().substring(1));
+		//System.out.println(classLoader.getResource("/"));
+		//System.out.println(classLoader.getResource("esquema.graphqls"));
 		
 
 
@@ -1083,7 +1083,7 @@ public class Main extends HttpServlet{
 		}
 		VirtGraph graph = null;
 		
-		System.out.println(url_hostlist +" "+  user +  " " +password);
+		//System.out.println(url_hostlist +" "+  user +  " " +password);
 		graph = new VirtGraph (url_hostlist, user, password);
 
 	
@@ -1102,10 +1102,6 @@ public class Main extends HttpServlet{
 	
 			graph.close();
 			
-			for(Object o : createdObjects){
-				System.out.println(o.getName().toString());
-				
-			}
 	
 			File file= new File(getServletContext().getRealPath("WEB-INF/classes/esquema.graphqls"));
 			if(!file.exists()) file.createNewFile();
@@ -1267,7 +1263,7 @@ public class Main extends HttpServlet{
 		dbName = request.getParameter("DbName");
 		
 		
-		System.out.println(url_hostlist);
+		//System.out.println(url_hostlist);
 		
 		SimpleDateFormat dateFormat = new SimpleDateFormat("M.dd.yyyy-HH.mm.ss");
 		tiempo = dateFormat.format(timestamp);
@@ -1288,7 +1284,7 @@ public class Main extends HttpServlet{
 			try {
 				main();
 			} catch (Exception e) {
-				System.out.println(e.getMessage());
+				//System.out.println(e.getMessage());
 				excepcio = true;
 			}
 

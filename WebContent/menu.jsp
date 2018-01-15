@@ -36,7 +36,7 @@ String serverName =  prop.getProperty("serverName");
     
 	  <div class="grid-item"><a href= "./../<%=serverName%>/getEsquema"  class="btn btn-outline-primary btn-lg"> Veure esquema GraphQL  </a></div>
 	  <div class="grid-item"><a href= " ./../<%=serverName%>/servidor.html"  class="btn btn-outline-primary btn-lg"> Fer peticions a l'API GraphQL </a></div>
-	  <div class="grid-item"><a href= " ./../<%=serverName%>/createWar"  class="btn btn-outline-primary btn-lg"> Descarregar l'aplicació web de l'API GraphQL </a></div>
+	  <div class="grid-item"><a href= " ./../<%=serverName%>/createWar"  class="btn btn-outline-primary btn-lg"> Descarregar l'aplicació web que conté l'API GraphQL </a></div>
 	  <div class="grid-item"><a href= "./../<%=serverName%>/EditConfigFromServer"  class="btn btn-outline-primary btn-lg"> Editar paràmetres de connexió a la base de dades </a></div>
 	
 	</div>

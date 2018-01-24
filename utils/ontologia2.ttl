@@ -1,0 +1,87 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> . 
+@prefix gql: <http://www.essi.upc.edu/~jvarga/gql/> . 
+
+@prefix ex: <http://www.example.com/> .
+
+###   Classes    ###
+
+ex:Persona  a  gql:Object .	
+
+ex:Cantant  a  gql:Object ;
+	rdfs:subClassOf ex:Persona .
+
+ex:JugadorFutbol  a  gql:Object ;
+		rdfs:subClassOf ex:Persona .
+
+ex:EquipFutbol  a  gql:Object .			
+
+
+###  Properties  ###
+
+ex:edat  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:Persona ;
+		rdfs:range gql:Int .	
+		
+ex:nomPersona  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:Persona ;
+		rdfs:range gql:String .
+
+ex:coneixA  a  rdf:Property, gql:ObjectField ;
+		rdfs:domain ex:Persona ;
+		rdfs:range ex:Persona .
+
+ex:concertsFets  a  rdf:Property, gql:ScalarField;
+		rdfs:domain ex:Cantant ;
+		rdfs:range ex:Int .
+		
+ex:equip  a  rdf:Property, gql:ObjectField ;
+		rdfs:domain ex:JugadorFutbol ;
+		rdfs:range ex:EquipFutbol .
+
+ex:nomEquip  a  rdf:Property, gql:ScalarField;
+		rdfs:domain ex:EquipFutbol ;
+		rdfs:range ex:String .
+		
+ex:anyFundacio  a  rdf:Property, gql:ScalarField;
+		rdfs:domain ex:EquipFutbol ;
+		rdfs:range ex:Int .
+
+ex:coneixA gql:hasModifier ex:l5 .		
+ex:l5 a gql:List .
+
+ex:JosepBartomeu a ex:Persona;
+	ex:nomPersona "Josep Maria Bartomeu"^^xsd:String ;
+	ex:edat "54"^^xsd:Int ;
+	ex:coneixA ex:Shakira ;
+	ex:coneixA ex:DaniParejo ;
+	ex:coneixA ex:GerardPique .
+
+ex:Shakira a ex:Cantant;
+	ex:nomPersona "Shakira"^^xsd:String ;
+	ex:edat "40"^^xsd:Int ;
+	ex:coneixA ex:GerardPique;
+	ex:concertsFets "30"^^xsd:Integer .
+
+ex:Barcelona a ex:EquipFutbol;
+	ex:nomEquip "FC Barcelona"^^xsd:String ;
+	ex:anyFundacio "1899"^^xsd:Int.
+	
+ex:Valencia a ex:EquipFutbol;
+	ex:nomEquip "Valencia CF"^^xsd:String ;
+	ex:anyFundacio "1919"^^xsd:Int.
+	
+ex:DaniParejo a ex:JugadorFutbol;
+	ex:nomPersona "Daniel Parejo"^^xsd:String ;
+	ex:edat "28"^^xsd:Int ;
+	ex:coneixA ex:GerardPique ;
+	ex:equip ex:Valencia. 
+		
+ex:GerardPique a ex:JugadorFutbol;
+	ex:nomPersona "Gerard Pique"^^xsd:String ;
+	ex:edat "30"^^xsd:Int ;
+	ex:coneixA ex:Shakira ;
+	ex:coneixA ex:DaniParejo ;
+	ex:equip ex:Barcelona. 
+		

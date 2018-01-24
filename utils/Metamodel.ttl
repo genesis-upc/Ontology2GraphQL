@@ -1,0 +1,86 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+@prefix gql: <http://www.essi.upc.edu/~jvarga/gql/> . 
+
+###   Classes    ###
+
+gql:Object a rdfs:Class ;
+    	rdfs:label "GraphQL Object Type"@en ;
+		rdfs:isDefinedBy <http://www.essi.upc.edu/~jvarga/gql> .
+		
+gql:Field a rdfs:Class ;
+		rdfs:subClassOf rdf:Property ;
+		rdfs:domain gql:Object ;
+    	rdfs:label "GraphQL Field "@en ;
+		rdfs:isDefinedBy <http://www.essi.upc.edu/~jvarga/gql> .
+		
+gql:ObjectField a rdfs:Class ;
+		rdfs:subClassOf gql:Field ;
+		rdfs:subClassOf rdf:Property ;
+		rdfs:domain gql:Object ;
+		rdfs:range gql:Object ;
+    	rdfs:label "GraphQL Field linking to Object"@en ;
+		rdfs:isDefinedBy <http://www.essi.upc.edu/~jvarga/gql> .
+		
+gql:ScalarField a rdfs:Class ;
+		rdfs:subClassOf gql:Field ;
+		rdfs:subClassOf rdf:Property ;
+		rdfs:domain gql:Object ;
+		rdfs:range gql:Scalar ;
+    	rdfs:label "GraphQL Field linking to Scalar"@en ;
+		rdfs:isDefinedBy <http://www.essi.upc.edu/~jvarga/gql> .
+
+gql:Modifier a rdfs:Class ;
+    	rdfs:label "GraphQL Modifier"@en ;
+		rdfs:isDefinedBy <http://www.essi.upc.edu/~jvarga/gql> .
+		
+gql:List a rdfs:Class ;
+		rdfs:subClassOf gql:Modifier ;
+    	rdfs:label "GraphQL List Modifier"@en ;
+		rdfs:isDefinedBy <http://www.essi.upc.edu/~jvarga/gql> .
+		
+gql:NonNull a rdfs:Class ;
+		rdfs:subClassOf gql:Modifier ;
+    	rdfs:label "GraphQL Non-null Modifier"@en ;
+		rdfs:isDefinedBy <http://www.essi.upc.edu/~jvarga/gql> .
+		
+gql:Scalar a rdfs:Class ;
+    	rdfs:label "GraphQL Scalar"@en ;
+		rdfs:isDefinedBy <http://www.essi.upc.edu/~jvarga/gql> . 
+		
+###  Properties  ###
+		
+gql:hasModifier  a  rdf:Property ;
+		rdfs:label "Field has modifier"@en ;
+		rdfs:isDefinedBy <http://www.essi.upc.edu/~jvarga/gql> ;
+		rdfs:domain gql:Field ;
+		rdfs:range gql:Modifier .		
+
+gql:combinedWith  a  rdf:Property ;
+		rdfs:label "Modifier combined with another modifier"@en ;
+		rdfs:isDefinedBy <http://www.essi.upc.edu/~jvarga/gql> ;
+		rdfs:domain gql:Modifier ;
+		rdfs:range gql:Modifier .		
+
+###  Scalar types  ###
+
+gql:Int a gql:Scalar ;
+		rdfs:label "GraphQL Integer"@en ;
+		rdfs:isDefinedBy <http://www.essi.upc.edu/~jvarga/gql> .
+
+gql:Boolean a gql:Scalar ;
+		rdfs:label "GraphQL Boolean"@en ;
+		rdfs:isDefinedBy <http://www.essi.upc.edu/~jvarga/gql> .
+
+gql:Float a gql:Scalar ;
+		rdfs:label "GraphQL Float"@en ;
+		rdfs:isDefinedBy <http://www.essi.upc.edu/~jvarga/gql> .
+
+gql:ID a gql:Scalar ;
+		rdfs:label "GraphQL ID"@en ;
+		rdfs:isDefinedBy <http://www.essi.upc.edu/~jvarga/gql> .
+
+gql:String a gql:Scalar ;
+		rdfs:label "GraphQL String"@en ;
+		rdfs:isDefinedBy <http://www.essi.upc.edu/~jvarga/gql> .			

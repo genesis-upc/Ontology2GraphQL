@@ -1,0 +1,292 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> . 
+@prefix gql: <http://www.essi.upc.edu/~jvarga/gql/> . 
+
+@prefix ex: <http://www.example.com/> .
+
+###   Classes    ###
+
+ex:GeographicalCoordinate  a  gql:Object .	
+
+ex:Infrastructure  a  gql:Object .
+
+
+ex:MetroAndBusStop  a  gql:Object ;
+		rdfs:subClassOf ex:Infrastructure .
+
+ex:BicingStation  a  gql:Object ;
+		rdfs:subClassOf ex:Infrastructure .
+		
+ex:Suburb  a  gql:Object .		
+
+ex:District  a  gql:Object .	
+
+
+###  Properties  ###
+
+ex:longitude  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:GeographicalCoordinate ;
+		rdfs:range gql:Float .	
+		
+ex:latitude  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:GeographicalCoordinate ;
+		rdfs:range gql:Float .
+
+ex:locatedIn  a  rdf:Property, gql:ObjectField ;
+		rdfs:domain ex:Infrastructure ;
+		rdfs:range ex:GeographicalCoordinate .
+
+ex:nearByInfrastructure  a  rdf:Property, gql:ObjectField ;
+		rdfs:domain ex:Infrastructure ;
+		rdfs:range ex:Infrastructure .
+		
+
+#stop properties
+ex:stopName  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:MetroAndBusStop ;
+		rdfs:range gql:String .
+
+ex:stopAddress  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:MetroAndBusStop ;
+		rdfs:range gql:String .
+
+ex:stopPhone  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:MetroAndBusStop ;
+		rdfs:range gql:Int .
+
+#station properties
+ex:stationID  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:BicingStation ;
+		rdfs:range gql:ID .
+
+ex:stationType  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:BicingStation ;
+		rdfs:range gql:String .
+
+ex:stationStreetName  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:BicingStation ;
+		rdfs:range gql:String .
+
+ex:stationStatus  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:BicingStation ;
+		rdfs:range gql:String .
+
+ex:stationStreetNumber  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:BicingStation ;
+		rdfs:range gql:Int .		
+		
+ex:stationSlotsNumber  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:BicingStation ;
+		rdfs:range gql:Int .	
+		
+ex:stationBikesNumber  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:BicingStation ;
+		rdfs:range gql:Int .		
+
+ex:stationAltitude  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:BicingStation ;
+		rdfs:range gql:Float .		
+
+ex:nearByStation  a  rdf:Property, gql:ObjectField ;
+		rdfs:domain ex:BicingStation ;
+		rdfs:range ex:BicingStation .
+		
+		
+#suburb properties		
+ex:providesStop  a  rdf:Property, gql:ObjectField ;
+		rdfs:domain ex:Suburb ;
+		rdfs:range ex:MetroAndBusStop .	
+
+ex:belongsTo  a  rdf:Property, gql:ObjectField ;
+		rdfs:domain ex:Suburb ;
+		rdfs:range ex:District .		
+		
+ex:suburbName  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:Suburb ;
+		rdfs:range gql:String .		
+		
+#district properties
+ex:districtName  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:District ;
+		rdfs:range gql:String .		
+		
+ex:districtNumber  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain ex:District ;
+		rdfs:range gql:Int .	
+
+
+
+
+
+ex:districtName  gql:hasModifier ex:nn2 .	
+ex:nn2 a gql:NonNull .
+
+ex:districtNumber  gql:hasModifier ex:nn3 .	
+ex:nn3 a gql:NonNull .
+
+ex:providesStop  gql:hasModifier ex:l2 .		
+ex:l2 a gql:List .
+
+ex:belongsTo  gql:hasModifier ex:nn4 .	
+ex:nn4 a gql:NonNull .		
+		
+ex:suburbName gql:hasModifier ex:nn5 .	
+ex:nn5 a gql:NonNull .
+		
+ex:stationID  gql:hasModifier ex:nn6 .	
+ex:nn6 a gql:NonNull .
+
+ex:stationType gql:hasModifier ex:nn7 .	
+ex:nn7 a gql:NonNull .
+
+ex:stationStreetName gql:hasModifier ex:nn8 .	
+ex:nn8 a gql:NonNull .
+
+ex:stationStatus gql:hasModifier ex:nn9 .	
+ex:nn9 a gql:NonNull .
+
+ex:stationStreetNumber gql:hasModifier ex:nn10 .	
+ex:nn10 a gql:NonNull .		
+		
+ex:stationSlotsNumber gql:hasModifier ex:nn11 .	
+ex:nn11 a gql:NonNull .	
+		
+ex:stationBikesNumber gql:hasModifier ex:nn12 .	
+ex:nn12 a gql:NonNull .		
+
+ex:stationAltitude gql:hasModifier ex:nn13 .	
+ex:nn13 a gql:NonNull .		
+
+ex:nearByStation gql:hasModifier ex:l4 .		
+ex:l4 a gql:List .
+
+ex:stopName gql:hasModifier ex:nn14 .	
+ex:nn14 a gql:NonNull .	
+
+ex:longitude gql:hasModifier ex:nn15 .	
+ex:nn15 a gql:NonNull .		
+		
+ex:latitude gql:hasModifier ex:nn16 .	
+ex:nn16 a gql:NonNull .	
+
+ex:locatedIn gql:hasModifier ex:nn17 .	
+ex:nn17 a gql:NonNull .	
+
+ex:nearByInfrastructure gql:hasModifier ex:l5 .		
+ex:l5 a gql:List .
+
+
+###  Instances  ###
+
+ex:Localitzacio a ex:GeographicalCoordinate ;
+	ex:longitude "2.43"^^xsd:float ;
+	ex:latitude "3.43"^^xsd:float .
+	
+ex:Localitzacio2 a ex:GeographicalCoordinate ;
+	ex:longitude "1.22"^^xsd:float ;
+	ex:latitude "1.90"^^xsd:float .
+	
+ex:Localitzacio3 a ex:GeographicalCoordinate ;
+	ex:longitude "0.22"^^xsd:float ;
+	ex:latitude "0.90"^^xsd:float .
+	
+ex:Localitzacio4 a ex:GeographicalCoordinate ;
+	ex:longitude "100.22"^^xsd:float ;
+	ex:latitude "58.90"^^xsd:float .
+	
+ex:Localitzacio5 a ex:GeographicalCoordinate ;
+	ex:longitude "200.10"^^xsd:float ;
+	ex:latitude "42.70"^^xsd:float .
+	
+
+ex:EstacioBici a ex:BicingStation;
+	ex:locatedIn ex:Localitzacio ;
+	ex:stationID "1"^^xsd:Integer ;
+	ex:stationType "BicingBCN"^^xsd:String ; 
+	ex:stationStreetName "Carrer Prat"^^xsd:String ; 
+	ex:stationStatus "Activa"^^xsd:String ; 
+	ex:stationStreetNumber "43"^^xsd:Integer ;
+	ex:stationSlotsNumber "10"^^xsd:Integer ;
+	ex:stationBikesNumber "5"^^xsd:Integer ;
+	ex:stationAltitude "1.6"^^xsd:Float ;
+	ex:nearByInfrastructure ex:EstacioBici2 . 
+	
+ex:EstacioBici2 a ex:BicingStation;
+	ex:locatedIn ex:Localitzacio2 ;
+	ex:stationID "2"^^xsd:Integer ;
+	ex:stationType "BicingBCN"^^xsd:String ; 
+	ex:stationStreetName "Carrer Barcelona"^^xsd:String ; 
+	ex:stationStatus "Activa"^^xsd:String ; 
+	ex:stationStreetNumber "54"^^xsd:Integer ;
+	ex:stationSlotsNumber "11"^^xsd:Integer ;
+	ex:stationBikesNumber "3"^^xsd:Integer ;
+	ex:stationAltitude "10"^^xsd:Float ;
+	ex:nearByInfrastructure ex:EstacioBici ;
+	ex:nearByInfrastructure ex:EstacioBici3 . 
+	
+ex:EstacioBici3 a ex:BicingStation;
+	ex:locatedIn ex:Localitzacio3 ;
+	ex:stationID "3"^^xsd:Integer ;
+	ex:stationType "BicingMataro"^^xsd:String ; 
+	ex:stationStreetName "Carrer Arribau"^^xsd:String ; 
+	ex:stationStatus "No Activa"^^xsd:String ; 
+	ex:stationStreetNumber "20"^^xsd:Integer ;
+	ex:stationSlotsNumber "5"^^xsd:Integer ;
+	ex:stationBikesNumber "2"^^xsd:Integer ;
+	ex:stationAltitude "450"^^xsd:Float ;
+	ex:nearByInfrastructure ex:EstacioBici2 ;
+	ex:nearByStation ex:EstacioBici ;
+	ex:nearByInfrastructure ex:MetroAndBus1 .
+	
+ex:MetroAndBus1 a ex:MetroAndBusStop;
+	ex:locatedIn ex:Localitzacio4 ;
+	ex:stopName  "Guinardo"^^xsd:String ;
+	ex:stopAddress "Calle falsa"^^xsd:String ;
+	ex:stopPhone  "493287"^^xsd:Integer ;
+	ex:nearByInfrastructure ex:MetroAndBus2 .
+	
+ex:MetroAndBus2 a ex:MetroAndBusStop;
+	ex:locatedIn ex:Localitzacio4 ;
+	ex:stopName  "La sagrera"^^xsd:String ;
+	ex:stopAddress "Calle alamo"^^xsd:String ;
+	ex:nearByInfrastructure ex:EstacioBici2 ;
+	ex:nearByInfrastructure ex:Infrastructure1 ;
+	ex:nearByInfrastructure ex:EstacioBici3 .
+	
+ex:Infrastructure1 a  ex:Infrastructure;
+	ex:locatedIn ex:Localitzacio4 ;
+	ex:nearByInfrastructure ex:EstacioBici ;
+	ex:nearByInfrastructure ex:EstacioBici3 .
+	
+	
+ex:District1 a ex:District;
+	ex:districtName "XXXXXX"^^xsd:String ;
+	ex:districtNumber  "22"^^xsd:Integer .
+	
+ex:District2 a ex:District;
+	ex:districtName "YYYYY"^^xsd:String ;
+	ex:districtNumber  "33"^^xsd:Integer.
+	
+ex:Suburb1 a ex:Suburb;
+	ex:providesStop  ex:MetroAndBus1;
+	ex:providesStop  ex:MetroAndBus2;
+	ex:belongsTo  ex:District1;			
+	ex:suburbName  "Suburb1"^^xsd:String .
+
+ex:Suburb2 a ex:Suburb;
+	ex:providesStop  ex:MetroAndBus1;
+	ex:belongsTo  ex:District2;			
+	ex:suburbName  "Suburb2"^^xsd:String .
+
+	
+	
+	
+
+	
+	
+	
+
+
+
+	

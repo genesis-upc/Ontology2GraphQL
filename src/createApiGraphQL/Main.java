@@ -292,10 +292,10 @@ public class Main extends HttpServlet{
 	}
 	
 	public static MethodSpec createModifyScalarValue(){
-		
 		MethodSpec method = MethodSpec.methodBuilder("modifyScalarValue")
 				.addParameter(String.class, "value")
 				.addCode("int index = value.toString().indexOf(\"^\");\n")
+				.addCode("if (index < 0) index = value.toString().length();\n")
 				.addCode("String resultat =  value.toString().substring(0, index);\n")
 				.addCode("return resultat;\n")
 				.addModifiers(Modifier.PUBLIC)
@@ -325,10 +325,10 @@ public class Main extends HttpServlet{
 		MethodSpec method = MethodSpec.methodBuilder("connectVirtuoso")
 				.addParameter(String.class, "value")
 				.addCode("ArrayList<String> valor = new ArrayList<>();\n\n")
-				.addCode("try{\n")
-		        .addCode("\t prop.load(getClass().getClassLoader().getResourceAsStream(\"../../config.properties\")); \n")
-		        .addCode("\t $T graph = new $T (prop.getProperty(\"url_hostlist\"), prop.getProperty(\"user\"), prop.getProperty(\"password\"));\n", VirtGraph , VirtGraph)
-				.addCode("\t $T sparql = $T.create(\"Select ?valor FROM <\"+ prop.getProperty(\"dbName\") +\"> WHERE {\"\n", Query, QueryFactory)
+
+		        .addCode("$T graph = serverGraphQL.Query.getVirtGraph();\n" + 
+		        		"  String dbName = serverGraphQL.Query.getdbName();\n", VirtGraph)
+				.addCode("\t $T sparql = $T.create(\"Select ?valor FROM <\"+dbName +\"> WHERE {\"\n", Query, QueryFactory)
 				.addCode("\t + \" <\"+ this.idTurtle +\"> <\"+  value + \"> ?valor.\"\n")
 				.addCode("\t + \"}\");\n \n")
 				.addCode("\t $T vqe = $T.create (sparql, graph);\n",VirtuosoQueryExecution, VirtuosoQueryExecutionFactory)
@@ -337,9 +337,6 @@ public class Main extends HttpServlet{
 				.addCode("\t \t$T qs = res.next();\n", QuerySolution)
 				.addCode("\t \tvalor.add(qs.get(\"?valor\").toString());\n")
 				.addCode("\t }\n\n")
-				.addCode("\tgraph.close();\n")
-				.addCode("}catch ($T ex){\n", ex)
-				.addCode("}\n")
 				.addCode("return valor;\n")
 
 			    .returns(listOfStrings)
@@ -369,10 +366,9 @@ public class Main extends HttpServlet{
 				.addParameter(String.class, "value")
 				.addParameter(String.class, "id")
 				.addCode("ArrayList<String> valor = new ArrayList<>();\n\n")
-				.addCode("try{\n")
-				.addCode("\t prop.load(getClass().getClassLoader().getResourceAsStream(\"../../config.properties\")); \n")
-				.addCode("\t $T graph = new $T (prop.getProperty(\"url_hostlist\"), prop.getProperty(\"user\"), prop.getProperty(\"password\"));\n", VirtGraph , VirtGraph)
-				.addCode("\t $T sparql = $T.create(\"Select ?valor FROM <\"+ prop.getProperty(\"dbName\") +\"> WHERE {\"\n", Query, QueryFactory)
+		        .addCode("$T graph = serverGraphQL.Query.getVirtGraph();\n" + 
+		        		"  String dbName = serverGraphQL.Query.getdbName();\n", VirtGraph)
+				.addCode("\t $T sparql = $T.create(\"Select ?valor FROM <\"+ dbName +\"> WHERE {\"\n", Query, QueryFactory)
 				.addCode("\t + \" <\"+ id +\"> <\"+  value + \"> ?valor.\"\n")
 				.addCode("\t + \"}\");\n \n")
 				.addCode("\t $T vqe = $T.create (sparql, graph);\n",VirtuosoQueryExecution, VirtuosoQueryExecutionFactory)
@@ -381,9 +377,6 @@ public class Main extends HttpServlet{
 				.addCode("\t \t $T qs = res.next();\n", QuerySolution)
 				.addCode("\t \t valor.add(qs.get(\"?valor\").toString());\n")
 				.addCode("\t }\n\n")
-				.addCode("\tgraph.close();\n")
-				.addCode("}catch ($T ex){\n", ex)
-				.addCode("}\n")
 				.addCode("return valor;\n")
 			    .returns(listOfStrings)
 			    .addModifiers(Modifier.PUBLIC)
@@ -734,6 +727,7 @@ public class Main extends HttpServlet{
 					.addCode("\t \t String subject = qs.get(\"?subject\").toString();\n")
 					.addCode("\t \t $L.add(new $L(subject));\n", shortNameObject + "s", shortNameObject)
 					.addCode("\t }\n\n")
+
 					.addCode("\t graph.close();\n")
 				    .addModifiers(Modifier.PUBLIC);
 		}else{
@@ -807,6 +801,7 @@ public class Main extends HttpServlet{
 		else clase = getClassName(shortNameObject);
 		
 		ClassName ArrayList = ClassName.get("java.util", "ArrayList");
+		ClassName Arrays = ClassName.get("java.util", "Arrays");
 		ClassName Query = ClassName.get("org.apache.jena.query", "Query");
 		ClassName QueryFactory = ClassName.get("org.apache.jena.query", "QueryFactory");
 		ClassName QuerySolution = ClassName.get("org.apache.jena.query", "QuerySolution");
@@ -823,31 +818,39 @@ public class Main extends HttpServlet{
 		.addParameter(String.class, "id")
 	    .addModifiers(Modifier.PUBLIC)
 	    .returns(clase);
+
 		method.addCode("$L result = null; \n", returnType);
-		method.addCode("try{\n");
-		method.addCode("\t prop.load(getClass().getClassLoader().getResourceAsStream(\"../../config.properties\"));");
+		//method.addCode("try{\n");
+		//method.addCode("\t prop.load(getClass().getClassLoader().getResourceAsStream(\"../../config.properties\"));");
+		/*
 		method.addCode("\t $T graph = new $T (prop.getProperty(\"url_hostlist\"), prop.getProperty(\"user\"), prop.getProperty(\"password\"));\n", VirtGraph , VirtGraph)
 		.addCode("\t $T sparql = $T.create(\"Select * FROM <\"+ prop.getProperty(\"dbName\") +\"> WHERE {\"\n", Query, QueryFactory)
 		.addCode("\t + \" {<\"")
 		.addCode("\t + id ")
 		.addCode("\t + \"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?tipo.}\"\n")
 		.addCode("\t + \"}\" ); \n")
+		*/		
 
+
+
+
+		//method.addCode("\t $T graph = new $T (prop.getProperty(\"url_hostlist\"), prop.getProperty(\"user\"), prop.getProperty(\"password\"));\n", VirtGraph , VirtGraph)
+        method.addCode("$T graph = serverGraphQL.Query.getVirtGraph();\n" + 
+        		"  String dbName = serverGraphQL.Query.getdbName();\n", VirtGraph)
+		.addCode("\t $T sparql = $T.create(\"SELECT (group_concat(?tipo; separator= '!!') as ?tipos)  FROM <\"+ dbName +\"> WHERE {\"\n", Query, QueryFactory)
+		.addCode("\t + \" {<\"")
+		.addCode("\t + id ")
+		.addCode("\t + \"> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?tipo.}\"\n")
+		.addCode("\t + \"}\" ); \n")
+		
 		.addCode("\t $T vqe = $T.create (sparql, graph);\n",VirtuosoQueryExecution, VirtuosoQueryExecutionFactory)
 		.addCode("\t $T res = vqe.execSelect();\n", ResultSet)
-		.addCode("\t String tipo = null;")
 		.addCode("\t while(res.hasNext()){\n")
 		.addCode("\t \t $T qs = res.next();\n", QuerySolution)
-		.addCode("\t \t if(qs.get(\"?tipo\") != null) tipo = qs.get(\"?tipo\").toString();\n")
-		.addCode("\t }\n\n")
-		.addCode("\t graph.close();\n")
-
-		
-		
-		
-
-		.addCode("\t if(tipo != null){\n");
-		
+		.addCode("\t \t ArrayList<String> tipos = null;\n")
+   	 	.addCode("\t \t tipos =  new ArrayList<String>($T.asList(qs.get(\"?tipos\").toString().split(\"!!\")));\n", Arrays)
+   		.addCode("\t \t for(String tipo : tipos) {\n");
+   	    
 
 		method.addCode("\t \t if(tipo.equals($S)) result =  new $L(id);\n", nameObject, shortNameObject);
 		if(interfaces.containsKey(nameObject)){
@@ -857,12 +860,12 @@ public class Main extends HttpServlet{
 				method.addCode("\t \t else if(tipo.equals($S)) result = new $L(id);\n", subclass, shortNameSubClass);
 			}
 		}
-
-		method.addCode("\t } else { \n")
-		.addCode("\t \t result = null; \n")
-		.addCode("\t } \n")
-		.addCode("}catch ($T ex){\n", ex)
-		.addCode("}\n")
+		method.addCode("\t \t }\n\n");
+		method.addCode("\t }\n\n")
+		//.addCode("\t graph.close();\n")
+		
+		//.addCode("}catch ($T ex){\n", ex)
+		//.addCode("}\n")
 		.addCode("return result; \n");
 
 		
@@ -905,7 +908,50 @@ public class Main extends HttpServlet{
 
 		javaFile.writeTo(new File(fileDestination));	
 	}
-	
+	 
+		public static MethodSpec getProperties(){
+			ClassName virtGraph = ClassName.get("virtuoso.jena.driver" , "VirtGraph");
+			ClassName properties = ClassName.get("java.util" , "Properties");
+
+
+			MethodSpec method = MethodSpec.methodBuilder("getProperties")
+				  	  .addCode("try{\n")
+				  	  .addCode("$T prop = new Properties();\n", properties)
+				  	  .addCode("prop.load(getClass().getClassLoader().getResourceAsStream(\"../../config.properties\"));\n")
+				  	  .addCode("getClass().getClassLoader().getResourceAsStream(\"../../config.properties\").close();\n")
+				  	  .addCode("graph = new $T (prop.getProperty(\"url_hostlist\"), prop.getProperty(\"user\"), prop.getProperty(\"password\"));\n", virtGraph)
+				  	  .addCode("dbName = prop.getProperty(\"dbName\");\n")
+				  	  .addCode("}catch (Exception ex){\n")
+				  	  .addCode("		System.out.println(ex.getMessage());\n")
+				  	  .addCode("}\n")
+					.addModifiers(Modifier.PUBLIC)
+					.build();
+			return method;
+		}
+		
+		public static MethodSpec getVirtGraph(){
+			ClassName virtGraph = ClassName.get("virtuoso.jena.driver" , "VirtGraph");
+
+
+			MethodSpec method = MethodSpec.methodBuilder("getVirtGraph")
+				  	  .addCode("return graph;")
+					.addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+					.returns(virtGraph)
+					.build();
+			return method;
+		}
+		public static MethodSpec getdbName(){
+
+
+			MethodSpec method = MethodSpec.methodBuilder("getdbName")
+				  	  .addCode("return dbName;")
+					.addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+					.returns(String.class)
+					.build();
+			return method;
+		}
+		
+	 
 	public static MethodSpec queryList(String nameObject, boolean isInterface){
 		
 		ClassName clase;
@@ -917,6 +963,7 @@ public class Main extends HttpServlet{
 		TypeName listOfClass = ParameterizedTypeName.get(arrayList, clase);
 		
 		MethodSpec method = MethodSpec.methodBuilder("all" + nameObject + "s")
+				.addCode("getProperties();\n")
 				.addCode("return $LRepositoryInstance.getAll$Ls();\n", nameObject, nameObject)
 				.addModifiers(Modifier.PUBLIC)
 				.returns(listOfClass)
@@ -931,6 +978,7 @@ public class Main extends HttpServlet{
 
 
 		MethodSpec method = MethodSpec.methodBuilder("get" + nameObject )
+				.addCode("getProperties();\n")
 				.addCode("return $LRepositoryInstance.get$L(id);\n", nameObject, nameObject)
 				.addModifiers(Modifier.PUBLIC)
 				.returns(clase)
@@ -947,7 +995,8 @@ public class Main extends HttpServlet{
 		ClassName schemaParser = ClassName.get("com.coxautodev.graphql.tools" , "SchemaParser");
 		ClassName GraphQLSchema = ClassName.get("graphql.schema" , "GraphQLSchema");
 		ClassName webServlet = ClassName.get("javax.servlet.annotation" , "WebServlet");
-		
+
+
 		TypeName listOfClass = ParameterizedTypeName.get(arrayList, claseImplements);
 		
 		TypeSpec.Builder builderQuery = TypeSpec.classBuilder("Query")
@@ -991,8 +1040,12 @@ public class Main extends HttpServlet{
 				.addCode(".resolvers(new $L(", "Query");
 				//.addCode(".file($S)\n", "esquema.graphqls");
 				
-
-		
+		ClassName virtGraph = ClassName.get("virtuoso.jena.driver" , "VirtGraph");
+		builderQuery.addField(virtGraph, "graph" , Modifier.PRIVATE, Modifier.STATIC); 
+		builderQuery.addField(String.class, "dbName" , Modifier.PRIVATE, Modifier.STATIC); 
+		builderQuery.addMethod(getProperties());
+		builderQuery.addMethod(getVirtGraph());
+		builderQuery.addMethod(getdbName());
 		
 		boolean first = true;
 		for(String repo : repositories){
@@ -1015,9 +1068,9 @@ public class Main extends HttpServlet{
 			if(first) {constructorGraphQLEndPoint.addCode("new $L()", repository); first = false;}
 			else constructorGraphQLEndPoint.addCode(", new $L()", repository);
 		}
-		
+		getClass().getClassLoader().getResourceAsStream("../../config.properties"); 
 		constructorGraphQLEndPoint.addCode("))\n");
-		
+
 		for(String repo : repositories){
 			Integer index = repo.lastIndexOf("/");
 			repo = repo.substring(index + 1);
@@ -1025,12 +1078,28 @@ public class Main extends HttpServlet{
 		}
 		constructorGraphQLEndPoint.addCode(".build()\n");
 		constructorGraphQLEndPoint.addCode(".makeExecutableSchema());");
-		
-		
+		/*
+		ClassName graphQLError= ClassName.get("graphql" , "GraphQLError");
+		ClassName graphQLException= ClassName.get("graphql" , "ExceptionWhileDataFetching");
+		ClassName collectors= ClassName.get("java.util.stream", "Collectors");
+		TypeName listOfErrors = ParameterizedTypeName.get(arrayList, graphQLError);
+		MethodSpec filterGraphQLErrors = MethodSpec.methodBuilder("filterGraphQLErrors")
+				.addCode(" return errors.stream()" 
+			            + ".filter(e -> e instanceof $T || super.isClientError(e))"
+			            + ".map(e -> e instanceof $T ? new SanitizedError(($T) e) : e)"
+			            + ".collect($T.toList());", graphQLException, graphQLException, graphQLException,collectors)
+				.addModifiers(Modifier.PROTECTED)
+				.returns(listOfErrors)
+				.addParameter(listOfErrors, "errors")
+				.addAnnotation(Override.class)
+				.build();
+				builderGraphQLEndPoint.addMethod(filterGraphQLErrors);
+	   
+		*/
 		builderQuery.addMethod(constructorQueryBuilder.build());
 		
 		builderGraphQLEndPoint.addMethod(constructorGraphQLEndPoint.build());
-		
+
 		//Query
 		TypeSpec typeSpec = builderQuery.build();
 		JavaFile javaFile = JavaFile.builder("serverGraphQL", typeSpec)
@@ -1197,6 +1266,7 @@ public class Main extends HttpServlet{
 			SimpleDateFormat dateFormat = new SimpleDateFormat("M.dd.yyyy-HH.mm.ss");
 	        //SimpleDateFormat dateFormat = new SimpleDateFormat("M");
 			String tiempo = dateFormat.format(timestamp);
+			System.out.println(tiempo);
 
 			String parentFile = new File(getServletContext().getRealPath("")).getParentFile().getPath();
 			fileDestination =parentFile + "/" + tiempo +"/WEB-INF/classes";
@@ -1226,7 +1296,8 @@ public class Main extends HttpServlet{
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/config.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/config.java"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/esquema.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/esquema.java"));
 			FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/esquemaCtrl.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/esquemaCtrl.java"));
-
+			//FileUtils.copyFile(new File(getServletContext().getRealPath("recursosServidor/SanitizedError.java")),  new File(parentFile + "/" + tiempo +"/WEB-INF/classes/serverGraphQL/SanitizedError.java"));
+			
 			
 			
 	        String []cmd={"javac","-cp" , "../../lib/*","*.java"};
@@ -1284,7 +1355,7 @@ public class Main extends HttpServlet{
 			try {
 				main();
 			} catch (Exception e) {
-				//System.out.println(e.getMessage());
+				System.out.println(e.getMessage());
 				excepcio = true;
 			}
 

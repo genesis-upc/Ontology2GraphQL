@@ -1,0 +1,118 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> . 
+@prefix gql: <http://www.essi.upc.edu/~jvarga/gql/> . 
+
+@prefix ex: <http://www.example.com/> .
+@prefix movie: <http://data.linkedmdb.org/resource/movie/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix dc: <http://purl.org/dc/terms/> .
+
+###   Classes    ###
+
+movie:actor  a  gql:Object .
+movie:performance a gql:Object .
+foaf:Person a gql:Object . 
+movie:film_genre a gql:Object .
+movie:country a gql:Object . 
+movie:director  a gql:Object . 
+movie:film a gql:Object . 
+
+###  Properties  ###
+
+###Film###
+
+movie:country a  rdf:Property, gql:ObjectField ;
+		rdfs:domain movie:film;
+		rdfs:range movie:country .
+		
+movie:director a  rdf:Property, gql:ObjectField ;
+		rdfs:domain movie:film;
+		rdfs:range movie:director .
+		
+movie:performance a  rdf:Property, gql:ObjectField ;
+		rdfs:domain movie:film;
+		rdfs:range movie:performance .
+movie:performance gql:hasModifier ex:l1 .		
+ex:l1 a gql:List .
+
+movie:genre a  rdf:Property, gql:ObjectField ;
+		rdfs:domain movie:film;
+		rdfs:range movie:film_genre  .
+		
+movie:genre gql:hasModifier ex:l2 .		
+ex:l2 a gql:List .
+
+movie:actor a  rdf:Property, gql:ObjectField ;
+		rdfs:domain movie:film;
+		rdfs:range movie:actor  .
+movie:actor gql:hasModifier ex:l5 .		
+ex:l5 a gql:List .
+
+movie:filmid  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain movie:film;
+		rdfs:range gql:Int .
+		
+dc:date  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain movie:film;
+		rdfs:range gql:String .
+dc:title  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain movie:film;
+		rdfs:range gql:String .
+###Director###
+movie:director_directorid  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain movie:director;
+		rdfs:range gql:Int .
+movie:director_name  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain movie:director;
+		rdfs:range gql:String .
+
+###Country###
+movie:country_id  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain movie:country;
+		rdfs:range gql:Int .
+		
+movie:country_continent a  rdf:Property, gql:ScalarField ;
+		rdfs:domain movie:country;
+		rdfs:range gql:String .
+
+movie:country_name a  rdf:Property, gql:ScalarField ;
+		rdfs:domain movie:country;
+		rdfs:range gql:String .
+
+###Film_genre###
+movie:film_genre_film_genreid  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain movie:film_genre;
+		rdfs:range gql:Int .
+movie:film_genre_name a  rdf:Property, gql:ScalarField ;
+		rdfs:domain movie:film_genre;
+		rdfs:range gql:String .
+###Actor###
+movie:actor_actorid  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain movie:actor;
+		rdfs:range gql:Int .
+		
+movie:actor_name  a  rdf:Property, gql:ScalarField ;
+		rdfs:domain movie:actor;
+		rdfs:range gql:String .
+movie:performance a  rdf:Property, gql:ObjectField ;
+		rdfs:domain movie:actor;
+		rdfs:range movie:performance .
+
+
+###Person###
+movie:performance a  rdf:Property, gql:ObjectField ;
+		rdfs:domain foaf:Person;
+		rdfs:range movie:performance .
+
+
+		
+###Performance###
+movie:performance_performanceid a  rdf:Property, gql:ScalarField ;
+		rdfs:domain movie:performance;
+		rdfs:range gql:Int .
+		
+movie:performance_character a  rdf:Property, gql:ScalarField ;
+		rdfs:domain movie:performance;
+		rdfs:range gql:String .
+

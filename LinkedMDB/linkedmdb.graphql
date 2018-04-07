@@ -1,0 +1,68 @@
+type film {
+        genre : [film_genre]
+        director : director
+        title : String
+        actor : [actor]
+        date : String
+        country : country
+        filmid : Int
+        performance : [performance]
+        idInstance : String!
+}
+
+type Person {
+        performance : [performance]
+        idInstance : String!
+}
+
+type country {
+        country_name : String
+        country_continent : String
+        country_id : Int
+        idInstance : String!
+}
+
+type director {
+        director_name : String
+        director_directorid : Int
+        idInstance : String!
+}
+
+type actor {
+        actor_name : String
+        actor_actorid : Int
+        performance : [performance]
+        idInstance : String!
+}
+
+type film_genre {
+        film_genre_name : String
+        film_genre_film_genreid : Int
+        idInstance : String!
+}
+
+type performance {
+        performance_performanceid : Int
+        performance_character : String
+        idInstance : String!
+}
+
+type Query {
+        allfilms: [film]
+        getfilm(id: String!): film
+        allPersons: [Person]
+        getPerson(id: String!): Person
+        allcountrys: [country]
+        getcountry(id: String!): country
+        alldirectors: [director]
+        getdirector(id: String!): director
+        allactors: [actor]
+        getactor(id: String!): actor
+        allfilm_genres: [film_genre]
+        getfilm_genre(id: String!): film_genre
+        allperformances: [performance]
+        getperformance(id: String!): performance
+}
+schema {
+        query: Query
+}
